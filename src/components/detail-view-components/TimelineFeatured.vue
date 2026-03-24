@@ -41,14 +41,6 @@ function formatDate(dateStr) {
   align-items: center;
 }
 
-.featured__tag {
-  font-family: var(--space-mono), monospace;
-  font-size: 9px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--marigold);
-}
-
 .featured__date {
   font-family: var(--space-mono), monospace;
   font-size: 9px;
@@ -90,7 +82,7 @@ function formatDate(dateStr) {
   left: 0;
   right: 0;
   padding: 12px 16px;
-  background: linear-gradient(to top, rgba(20, 30, 15, 0.85), transparent);
+  background: linear-gradient(to top, rgba(44, 59, 34, 0.85) 60%, transparent 100%);
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
@@ -105,7 +97,7 @@ function formatDate(dateStr) {
 .featured__year {
   font-family: var(--space-mono), monospace;
   font-size: 9px;
-  color: var(--marigold);
+  color: var(--parchment);
   text-transform: uppercase;
   letter-spacing: 0.1em;
 }
