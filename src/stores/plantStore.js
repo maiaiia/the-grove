@@ -15,6 +15,9 @@ export const usePlantStore = defineStore('plants', {
     },
 
     actions: {
+        find(id) {
+            return this.plants.filter(p => p.id == id)
+        },
         addPlant(plant) {
             this.plants.push(plant)
         },

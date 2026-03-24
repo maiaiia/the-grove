@@ -11,15 +11,19 @@ export function createPlant(data) {
         wateringSchedule: data.wateringSchedule,
         lastWatered: data.lastWatered,
         location: data.location,
+        notes: data.notes ?? "",
 
         get age() {
             const start = new Date(this.datePlanted)
             const now = new Date()
             return Math.floor((now - start) / (1000 * 60 * 60 * 24 * 365))
         },
+        get sortedPhotos() {
+            return [...this.photos].sort((a, b) => b.date.localeCompare(a.date))
+        },
         get latestPhoto() {
-            if (!this.photos.length) return null
-            return [...this.photos].sort((a, b) => b.date.localeCompare(a.date))[0]
+            if (!this.photos || !this.photos.length) return null
+            return this.sortedPhotos[0]
         },
         get image() { //TODO - refactor
             if (this.latestPhoto)
@@ -41,7 +45,9 @@ export const plants = [
         latinName: "Monstera deliciosa",
         category: PLANT_CATEGORIES.TROPICAL,
         datePlanted: "2023-03-01",
-        photos: [{ date: "2024-03-02", url: "/monstera.jpg" }],
+        photos: [
+            { date: "2024-03-02", url: "/monstera.jpg", description: "" }
+        ],
         wateringSchedule: 2,
         lastWatered: "2026-03-20",
         location: PLANT_LOCATIONS.WINDOWSILL,
@@ -52,7 +58,7 @@ export const plants = [
         latinName: "Juniperus chinensis",
         category: PLANT_CATEGORIES.BONSAI,
         datePlanted: "2014-03-01",
-        photos: [{ date: "2026-03-20", url: "/oldjuniper.jpeg" }],
+        photos: [{ date: "2026-03-20", url: "/oldjuniper.jpeg", description: ""  }],
         wateringSchedule: 2,
         lastWatered: "2026-03-24",
         location: PLANT_LOCATIONS.INDOORS,
@@ -63,7 +69,7 @@ export const plants = [
         latinName: "Ficus retusa",
         category: PLANT_CATEGORIES.BONSAI,
         datePlanted: "2018-03-01",
-        photos: [{ date: "2026-03-20", url: "public/ficus.jpeg" }],
+        photos: [{ date: "2026-03-20", url: "/ficus.jpeg", description: ""  }],
         wateringSchedule: 7,
         lastWatered: "2026-03-21",
         location: PLANT_LOCATIONS.INDOORS,
@@ -74,7 +80,7 @@ export const plants = [
         latinName: "Aloe vera",
         category: PLANT_CATEGORIES.SUCCULENT,
         datePlanted: "2021-03-01",
-        photos: [{ date: "2026-03-20", url: "/aloevera.jpeg" }],
+        photos: [{ date: "2026-03-20", url: "/aloevera.jpeg", description: ""  }],
         wateringSchedule: 14,
         lastWatered: "2026-03-21",
         location: PLANT_LOCATIONS.OUTDOORS,
@@ -85,7 +91,7 @@ export const plants = [
         latinName: "Phalaenopsis amabilis",
         category: PLANT_CATEGORIES.FLOWERING,
         datePlanted: "2024-03-01",
-        photos: [{ date: "2026-03-20", url: "/ghostorchid.jpeg" }],
+        photos: [{ date: "2026-03-20", url: "/ghostorchid.jpeg", description: ""  }],
         wateringSchedule: 7,
         lastWatered: "2026-03-21",
         location: PLANT_LOCATIONS.INDOORS,
@@ -96,7 +102,7 @@ export const plants = [
         latinName: "Pinus thunbergii",
         category: PLANT_CATEGORIES.BONSAI,
         datePlanted: "2011-03-01",
-        photos: [{ date: "2026-03-20", url: "/blackpine.jpeg" }],
+        photos: [{ date: "2026-03-20", url: "/blackpine.jpeg", description: ""  }],
         wateringSchedule: 2,
         lastWatered: "2026-03-21",
         location: PLANT_LOCATIONS.OUTDOORS,
