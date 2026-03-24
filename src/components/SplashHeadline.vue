@@ -23,7 +23,17 @@
       </div>
       <p> Every leaf, a new season</p>
     </div>
-
+    <div class="headline__body">
+      <p class="headline__description">
+        Document every leaf, every season, every slow transformation.
+        Share your grove, connect with fellow gardeners, and watch your
+        collection take shape over time.
+      </p>
+      <div class="headline__actions">
+        <button class="btn btn--primary">Enter the Grove</button>
+        <button class="btn btn--outline">Learn More</button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -101,4 +111,50 @@
   opacity: 0.7;
 }
 
+
+.headline__body {
+  margin-top: auto;
+  padding-top: 48px;
+}
+
+.headline__description {
+  font-family: var(--space-mono), monospace;
+  font-size: 13px;
+  line-height: 1.9;
+  color: var(--mongoose);
+  border-left: 2px solid var(--marigold);
+  padding-left: 16px;
+  margin: 0 0 32px 0;
+  max-width: 340px;
+}
+
+.headline__actions {
+  display: flex;
+  gap: 12px;
+}
+
+.btn {
+  font-family: var(--space-mono), monospace;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 18px 32px;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+
+.btn--primary {
+  background: var(--green-kelp);
+  color: var(--parchment);
+  border-color: var(--green-kelp);
+}
+
+.btn--outline {
+  background: transparent;
+  color: var(--avocado);
+  border-color: var(--mongoose);
+}
+
+.btn--primary:hover { opacity: 0.85; }
+.btn--outline:hover { border-color: var(--green-kelp); }
 </style>
