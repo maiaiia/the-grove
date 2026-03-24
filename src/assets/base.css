@@ -1,0 +1,23 @@
+:root {
+    --marigold: #C09A35;
+    --green-kelp: #2C3B22;
+    --avocado: #8C9A6E;
+    --mongoose: #B8A882;
+    --rodeo-dust: #C8B99A;
+    --cream: #F0E9D6;
+    --parchment: #F2EBD9;
+    --clay: #8B6A3A;
+    --tree-trunk: #3D2B1A;
+}
+:root {
+    --playfair-display: 'Playfair Display';
+    --space-mono: 'Space Mono';
+}
+/* semantic color variables for this project */
+:root {
+  --color-background: var(--cream);
+
+  --section-gap: 160px;
+}
+
+

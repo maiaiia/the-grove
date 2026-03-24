@@ -1,0 +1,7 @@
+export const PLANT_CATEGORIES = {
+    ALL: 'ALL',
+    BONSAI: 'BONSAI',
+    TROPICAL: 'TROPICAL',
+    SUCCULENT: 'SUCCULENT',
+    FLOWERING: 'FLOWERING',
+}
