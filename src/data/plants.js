@@ -46,6 +46,7 @@ export const plants = [
         wateringSchedule: 2,
         lastWatered: "2026-03-20",
         location: PLANT_LOCATIONS.WINDOWSILL,
+        notes: "Grew from a single node cutting. Now has over 12 large leaves with beautiful fenestration."
     }),
     createPlant({
         id: 2,

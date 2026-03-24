@@ -55,13 +55,16 @@ function formatDate(dateStr) {
       </div>
     </div>
 
-    <div class="profile__section" v-if="plant.notes">
+    <div class="profile__section" >
       <p class="profile__section-label">Notes & History</p>
-      <p class="profile__notes">{{ plant.notes }}</p>
+      <p class="profile__notes" v-if="plant.notes">{{ plant.notes }}</p>
+      <p class="profile__notes profile__notes--empty" v-else>No notes recorded for this specimen yet...</p>
     </div>
+    <div class="profile__section">
 
-    <div class="profile__actions">
       <a href="#" class="profile__btn profile__btn--outline">Care Details</a>
+    </div>
+    <div class="profile__actions">
       <button class="profile__btn profile__btn--primary">✎ Edit Plant Details</button>
       <button class="profile__btn profile__btn--danger">Remove from Grove</button>
     </div>
@@ -106,10 +109,10 @@ function formatDate(dateStr) {
 
 .profile__section-label {
   font-family: var(--space-mono), monospace;
-  font-size: 10px;
+  font-size: 16px;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: var(--marigold);
+  color: var(--avocado);
   margin: 0;
 }
 
@@ -127,16 +130,20 @@ function formatDate(dateStr) {
 
 .profile__field-label {
   font-family: var(--space-mono), monospace;
-  font-size: 9px;
+  font-size: 12px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--mongoose);
+  color: var(--avocado);
 }
 
 .profile__field-value {
-  font-family: var(--playfair-display), serif;
+  font-family: var(--space-mono), "Space Mono", monospace;
   font-size: 16px;
-  color: var(--green-kelp);
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: -0.3px;
+  color: var(--tree-trunk);
 }
 
 .profile__notes {
@@ -148,14 +155,16 @@ function formatDate(dateStr) {
   padding-left: 16px;
   margin: 0;
 }
-
+.profile__notes--empty {
+  opacity: 0.7;
+}
 .profile__actions {
   display: flex;
   flex-direction: column;
   gap: 12px;
   margin-top: auto;
   padding-top: 16px;
-  border-top: 1px solid rgba(44, 59, 34, 0.08);
+  border-top: 1px solid var(--rodeo-dust);
 }
 
 .profile__btn {
@@ -173,9 +182,13 @@ function formatDate(dateStr) {
   border: 1px solid transparent;
 }
 
+.profile__section .profile__btn {
+  border-radius: 0;
+}
+
 .profile__btn--outline {
   background: transparent;
-  border-color: var(--rodeo-dust);
+  border-color: var(--marigold);
   color: var(--marigold);
 }
 
@@ -186,10 +199,10 @@ function formatDate(dateStr) {
 
 .profile__btn--danger {
   background: transparent;
-  color: #c0392b;
+  color: var(--burnt-umber);
+  border-color: var(--burnt-umber);
 }
 
-.profile__btn--outline:hover { border-color: var(--marigold); }
 .profile__btn--primary:hover { opacity: 0.85; }
-.profile__btn--danger:hover { border-color: #c0392b; }
+.profile__btn--danger:hover { border-color: var(--burnt-umber); }
 </style>
