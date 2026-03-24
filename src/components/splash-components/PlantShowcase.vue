@@ -30,9 +30,9 @@ const currentSeason = seasons[seasonIndex]
 
 <template>
   <div class="plant-showcase" :style="{ maxWidth }">
+    <div class="plant-ring plant-ring--inner" />
+    <div class="plant-ring plant-ring--outer" />
     <div class="plant-image-wrapper">
-      <div class="plant-ring plant-ring--inner" />
-      <div class="plant-ring plant-ring--outer" />
       <img :src="currentPlant.image" :alt="currentPlant.name" class="plant-image" />
     </div>
 
@@ -56,6 +56,7 @@ const currentSeason = seasons[seasonIndex]
             :key="i"
             class="dot"
             :class="{ active: i === currentIndex }"
+            @click="currentIndex = i"
         />
       </div>
     </div>
@@ -76,11 +77,10 @@ const currentSeason = seasons[seasonIndex]
 }
 
 .plant-image-wrapper {
-  width: 72%;
+  width: 70%;
   aspect-ratio: 1;
   border-radius: 50%;
   overflow: hidden;
-  border: 1px solid rgba(180, 160, 120, 0.35);
   position: relative;
   margin-left: 8%;
 }
@@ -93,20 +93,25 @@ const currentSeason = seasons[seasonIndex]
 .plant-ring {
   position: absolute;
   border-radius: 50%;
-  border: 1px solid rgba(180, 160, 120, 0.25);
+  border: 1px solid var(--marigold);
   top: 50%;
-  left: 50%;
+  left: 54%;
   transform: translate(-50%, -50%);
   pointer-events: none;
+  z-index: 0;
 }
+
 .plant-ring--inner {
-  width: 108%;
+  width: 75%;
   aspect-ratio: 1;
+  opacity: 0.3;
 }
 
 .plant-ring--outer {
-  width: 118%;
+  width: 80%;
+  border-width: 2px;
   aspect-ratio: 1;
+  opacity: 0.1;
 }
 .plant-card {
   position: absolute;
@@ -189,7 +194,8 @@ const currentSeason = seasons[seasonIndex]
 .plant-season__dots {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+  height: 10px;
 }
 
 .dot {
@@ -197,7 +203,9 @@ const currentSeason = seasons[seasonIndex]
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: rgba(0,0,0,0.18);
+  background: rgba(0,0,0,0.15);
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
   flex-shrink: 0;
 }
 
@@ -208,6 +216,27 @@ const currentSeason = seasons[seasonIndex]
 }
 
 .plant-season__dots .dot.active {
-  background: var(--marigold);
+  width: 24px;
+  border-radius: 10px;
+
+  background: linear-gradient(
+      to right,
+      var(--marigold) 50%,
+      rgba(0, 0, 0, 0.15) 50%
+  );
+
+  background-size: 200% 100%;
+  background-position: 100% 0;
+
+  animation: fill-progress 5s linear infinite;
+}
+
+@keyframes fill-progress {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: 0% 0;
+  }
 }
 </style>
