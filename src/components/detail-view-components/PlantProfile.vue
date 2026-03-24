@@ -1,6 +1,9 @@
 <script setup>
 import { useEditPlantModal } from '@/composables/useEditPlantModal'
+import { useDeletePlantModal } from "@/composables/useDeletePlantModal.js";
+
 const { open: openEdit } = useEditPlantModal()
+const { open: openDelete } = useDeletePlantModal()
 const props = defineProps({ plant: Object })
 
 function formatDate(dateStr) {
@@ -68,7 +71,7 @@ function formatDate(dateStr) {
     </div>
     <div class="profile__actions">
       <button class="profile__btn profile__btn--primary" @click="openEdit(plant)">Edit Plant Details</button>
-      <button class="profile__btn profile__btn--danger">Remove from Grove</button>
+      <button class="profile__btn profile__btn--danger" @click="openDelete(plant)">Remove from Grove</button>
     </div>
   </div>
 </template>

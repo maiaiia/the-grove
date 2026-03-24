@@ -25,5 +25,8 @@ export const usePlantStore = defineStore('plants', {
             const index = this.plants.findIndex(p => p.id === updated.id)
             if (index !== -1) this.plants[index] = updated
         },
+        deletePlant(id){
+            this.plants = this.plants.filter(p => p.id !== id)
+        },
     },
 })
