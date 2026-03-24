@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { usePlantStore } from '@/stores/plantStore'
+import { usePlantStore } from '@/stores/plantStore.js'
 
 defineProps({
   maxWidth: {

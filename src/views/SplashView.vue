@@ -1,9 +1,9 @@
 <script setup>
 
-import SplashNav from "@/components/SplashNav.vue";
-import PlantShowcase from "@/components/PlantShowcase.vue";
-import SplashHeadline from "@/components/SplashHeadline.vue";
-import SplashStats from "@/components/SplashStats.vue";
+import SplashNav from "@/components/splash-components/SplashNav.vue";
+import PlantShowcase from "@/components/splash-components/PlantShowcase.vue";
+import SplashHeadline from "@/components/splash-components/SplashHeadline.vue";
+import SplashStats from "@/components/splash-components/SplashStats.vue";
 </script>
 
 <template>

@@ -1,9 +1,9 @@
 <script setup>
 import AppNav from "@/components/AppNav.vue"
-import GroveEyebrow from "@/components/GroveEyebrow.vue"
-import HeroCard from "@/components/HeroCard.vue"
-import PlantCard from "@/components/PlantCard.vue"
-import GrovePagination from "@/components/GrovePagination.vue"
+import GroveEyebrow from "@/components/master-view-components/GroveEyebrow.vue"
+import HeroCard from "@/components/master-view-components/HeroCard.vue"
+import PlantCard from "@/components/master-view-components/PlantCard.vue"
+import GrovePagination from "@/components/master-view-components/GrovePagination.vue"
 import { computed, ref } from 'vue'
 import { usePlantStore } from '@/stores/plantStore'
 
