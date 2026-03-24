@@ -6,38 +6,55 @@ export function createPlant(data) {
         name: data.name,
         latinName: data.latinName,
         category: data.category,
-        age: data.age,
-        image: data.image,
+        datePlanted: data.datePlanted, //YYYY-MM-DD
+        photos: data.photos ?? [],
         wateringSchedule: data.wateringSchedule,
         lastWatered: data.lastWatered,
-        lastPhotoDate: data.lastPhotoDate,
         location: data.location,
+
+        get age() {
+            const start = new Date(this.datePlanted)
+            const now = new Date()
+            return Math.floor((now - start) / (1000 * 60 * 60 * 24 * 365))
+        },
+        get latestPhoto() {
+            if (!this.photos.length) return null
+            return [...this.photos].sort((a, b) => b.date.localeCompare(a.date))[0]
+        },
+        get image() { //TODO - refactor
+            if (this.latestPhoto)
+                return this.latestPhoto.url
+            return null
+        },
+        get lastPhotoDate() { //TODO - refactor maybe
+            if (this.latestPhoto)
+                return this.latestPhoto.date
+            return null
+        }
     }
 }
 
-export const plants=[
+export const plants = [
     createPlant({
         id: 1,
         name: "Monstera Rex",
         latinName: "Monstera deliciosa",
         category: PLANT_CATEGORIES.TROPICAL,
-        age: 3,
-        image: "public/monstera.jpg",
+        datePlanted: "2023-03-01",
+        photos: [{ date: "2024-03-02", url: "/monstera.jpg" }],
         wateringSchedule: 2,
-        lastWatered: "20/03/2026",
-        lastPhotoDate: "20/03/2026",
+        lastWatered: "2026-03-20",
         location: PLANT_LOCATIONS.WINDOWSILL,
     }),
     createPlant({
-        id:2,
+        id: 2,
         name: "Old Juniper",
         latinName: "Juniperus chinensis",
         category: PLANT_CATEGORIES.BONSAI,
-        age: 12,
-        image: "public/oldjuniper.jpeg",
+        datePlanted: "2014-03-01",
+        photos: [{ date: "2026-03-20", url: "/oldjuniper.jpeg" }],
         wateringSchedule: 2,
-        lastWatered: "24/03/2026",
-        lastPhotoDate: "20/03/2026",
+        lastWatered: "2026-03-24",
         location: PLANT_LOCATIONS.INDOORS,
     }),
     createPlant({
@@ -45,11 +62,10 @@ export const plants=[
         name: "Little Ficus",
         latinName: "Ficus retusa",
         category: PLANT_CATEGORIES.BONSAI,
-        age: 8,
-        image: "public/ficus.jpeg",
+        datePlanted: "2018-03-01",
+        photos: [{ date: "2026-03-20", url: "public/ficus.jpeg" }],
         wateringSchedule: 7,
-        lastWatered: "21/03/2026",
-        lastPhotoDate: "20/03/2026",
+        lastWatered: "2026-03-21",
         location: PLANT_LOCATIONS.INDOORS,
     }),
     createPlant({
@@ -57,11 +73,10 @@ export const plants=[
         name: "Aloe Vera",
         latinName: "Aloe vera",
         category: PLANT_CATEGORIES.SUCCULENT,
-        age: 5,
-        image: "public/aloevera.jpeg",
+        datePlanted: "2021-03-01",
+        photos: [{ date: "2026-03-20", url: "/aloevera.jpeg" }],
         wateringSchedule: 14,
-        lastWatered: "21/03/2026",
-        lastPhotoDate: "20/03/2026",
+        lastWatered: "2026-03-21",
         location: PLANT_LOCATIONS.OUTDOORS,
     }),
     createPlant({
@@ -69,11 +84,10 @@ export const plants=[
         name: "Ghost Orchid",
         latinName: "Phalaenopsis amabilis",
         category: PLANT_CATEGORIES.FLOWERING,
-        age: 2,
-        image: "public/ghostorchid.jpeg",
+        datePlanted: "2024-03-01",
+        photos: [{ date: "2026-03-20", url: "/ghostorchid.jpeg" }],
         wateringSchedule: 7,
-        lastWatered: "21/03/2026",
-        lastPhotoDate: "20/03/2026",
+        lastWatered: "2026-03-21",
         location: PLANT_LOCATIONS.INDOORS,
     }),
     createPlant({
@@ -81,11 +95,10 @@ export const plants=[
         name: "Black Pine",
         latinName: "Pinus thunbergii",
         category: PLANT_CATEGORIES.BONSAI,
-        age: 15,
-        image: "public/blackpine.jpeg",
+        datePlanted: "2011-03-01",
+        photos: [{ date: "2026-03-20", url: "/blackpine.jpeg" }],
         wateringSchedule: 2,
-        lastWatered: "21/03/2026",
-        lastPhotoDate: "20/03/2026",
+        lastWatered: "2026-03-21",
         location: PLANT_LOCATIONS.OUTDOORS,
     }),
 ]
