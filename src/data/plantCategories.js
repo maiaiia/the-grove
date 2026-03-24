@@ -5,3 +5,9 @@ export const PLANT_CATEGORIES = {
     SUCCULENT: 'SUCCULENT',
     FLOWERING: 'FLOWERING',
 }
+
+export const PLANT_LOCATIONS ={
+    OUTDOORS: "Outdoors",
+    INDOORS: "Indoors",
+    WINDOWSILL: "Windowsill",
+}

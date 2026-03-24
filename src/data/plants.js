@@ -1,4 +1,4 @@
-import {PLANT_CATEGORIES} from "@/data/plantCategories.js";
+import {PLANT_CATEGORIES, PLANT_LOCATIONS} from "@/data/plantCategories.js";
 
 export function createPlant(data) {
     return {
@@ -8,8 +8,10 @@ export function createPlant(data) {
         category: data.category,
         age: data.age,
         image: data.image,
+        wateringSchedule: data.wateringSchedule,
         lastWatered: data.lastWatered,
         lastPhotoDate: data.lastPhotoDate,
+        location: data.location,
     }
 }
 
@@ -18,11 +20,13 @@ export const plants=[
         id: 1,
         name: "Monstera Rex",
         latinName: "Monstera deliciosa",
-        category: PLANT_CATEGORIES.SUCCULENT,
+        category: PLANT_CATEGORIES.TROPICAL,
         age: 3,
         image: "public/monstera.jpg",
+        wateringSchedule: 2,
         lastWatered: "20/03/2026",
         lastPhotoDate: "20/03/2026",
+        location: PLANT_LOCATIONS.WINDOWSILL,
     }),
     createPlant({
         id:2,
@@ -31,8 +35,10 @@ export const plants=[
         category: PLANT_CATEGORIES.BONSAI,
         age: 12,
         image: "public/oldjuniper.jpeg",
+        wateringSchedule: 2,
         lastWatered: "24/03/2026",
         lastPhotoDate: "20/03/2026",
+        location: PLANT_LOCATIONS.INDOORS,
     }),
     createPlant({
         id: 3,
@@ -41,7 +47,45 @@ export const plants=[
         category: PLANT_CATEGORIES.BONSAI,
         age: 8,
         image: "public/ficus.jpeg",
+        wateringSchedule: 7,
         lastWatered: "21/03/2026",
         lastPhotoDate: "20/03/2026",
-    })
+        location: PLANT_LOCATIONS.INDOORS,
+    }),
+    createPlant({
+        id: 4,
+        name: "Black Pine",
+        latinName: "Pinus thunbergii",
+        category: PLANT_CATEGORIES.BONSAI,
+        age: 15,
+        image: "public/ficus.jpeg",
+        wateringSchedule: 2,
+        lastWatered: "21/03/2026",
+        lastPhotoDate: "20/03/2026",
+        location: PLANT_LOCATIONS.OUTDOORS,
+    }),
+    createPlant({
+        id: 5,
+        name: "Ghost Orchid",
+        latinName: "Phalaenopsis amabilis",
+        category: PLANT_CATEGORIES.FLOWERING,
+        age: 2,
+        image: "public/ficus.jpeg",
+        wateringSchedule: 7,
+        lastWatered: "21/03/2026",
+        lastPhotoDate: "20/03/2026",
+        location: PLANT_LOCATIONS.INDOORS,
+    }),
+    createPlant({
+        id: 6,
+        name: "Aloe Vera",
+        latinName: "Aloe vera",
+        category: PLANT_CATEGORIES.SUCCULENT,
+        age: 5,
+        image: "public/ficus.jpeg",
+        wateringSchedule: 14,
+        lastWatered: "21/03/2026",
+        lastPhotoDate: "20/03/2026",
+        location: PLANT_LOCATIONS.OUTDOORS,
+    }),
 ]
