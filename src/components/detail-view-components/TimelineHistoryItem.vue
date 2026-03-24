@@ -12,7 +12,10 @@ function formatDate(dateStr) {
 <template>
   <div class="history-item" :class="{ active }" @click="$emit('click')">
     <div class="history-item__dot" />
-    <img :src="photo.url" class="history-item__thumb" />
+    <img v-if="photo" :src="photo.url" class="history-item__thumb" />
+    <div v-else class="history-item__thumb history-item__thumb--placeholder">
+      <img src="/grovelogo.svg" style="width: 24px; opacity: 0.3;" />
+    </div>
     <div class="history-item__meta">
       <span class="history-item__desc">{{ photo.description || '—' }}</span>
       <span class="history-item__date">{{ formatDate(photo.date) }}</span>
@@ -81,5 +84,11 @@ function formatDate(dateStr) {
   font-size: 9px;
   color: var(--marigold);
   text-transform: uppercase;
+}
+.history-item__thumb--placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.05);
 }
 </style>

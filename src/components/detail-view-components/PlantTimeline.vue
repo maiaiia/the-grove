@@ -27,7 +27,7 @@ function yearsSincePlanted(dateStr) {
   <div class="timeline">
     <p class="timeline__label">Growth Timeline</p>
 
-    <div class="timeline__history">
+    <div class="timeline__history" v-if="sortedPhotos.length">
       <TimelineHistoryItem
           v-for="(photo, i) in sortedPhotos"
           :key="photo.date"
@@ -37,10 +37,11 @@ function yearsSincePlanted(dateStr) {
           @click="activePhotoIndex = i"
       />
     </div>
+    <p class="timeline__empty" v-else>No photos yet.</p>
 
     <TimelineFeatured
         :photo="activePhoto"
-        :year="yearsSincePlanted(activePhoto.date)"
+        :year="activePhoto ? yearsSincePlanted(activePhoto.date): 0"
     />
   </div>
 </template>
@@ -73,7 +74,11 @@ function yearsSincePlanted(dateStr) {
   padding-right: 8px;
   min-height: 0;
 }
-
+.timeline__empty {
+  font-family: var(--playfair-display), "Playfair Display", serif;
+  font-size: 3vw;
+  color: var(--cream);
+}
 .timeline__history::-webkit-scrollbar { width: 3px; }
 .timeline__history::-webkit-scrollbar-track { background: transparent; }
 .timeline__history::-webkit-scrollbar-thumb { background: var(--avocado); border-radius: 2px; }

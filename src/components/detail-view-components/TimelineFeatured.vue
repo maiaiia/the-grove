@@ -11,12 +11,14 @@ function formatDate(dateStr) {
 <template>
   <div class="featured">
     <div class="featured__label">
-      <span class="featured__tag">Most Recent</span>
-      <span class="featured__date">{{ formatDate(photo.date) }}</span>
+      <span class="featured__date" v-if="photo">{{ formatDate(photo.date) }}</span>
     </div>
     <div class="featured__image-wrapper">
-      <img :src="photo.url" class="featured__image" />
-      <div class="featured__overlay">
+      <img v-if="photo" :src="photo.url" class="featured__image" />
+      <div v-else class="featured__placeholder">
+        <img src="/grovelogo.svg" class="featured__placeholder-logo" />
+      </div>
+      <div class="featured__overlay" v-if="photo">
         <span class="featured__desc">{{ photo.description || '—' }}</span>
         <span class="featured__year">Year {{ year }}</span>
       </div>
@@ -67,7 +69,21 @@ function formatDate(dateStr) {
   height: 100%;
   object-fit: cover;
 }
+.featured__placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.05);
+}
 
+.featured__placeholder-logo {
+  width: 16vw;
+  height: 16vw;
+  object-fit: contain;
+  opacity: 0.5;
+}
 .featured__overlay {
   position: absolute;
   bottom: 0;
