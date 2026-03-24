@@ -1,9 +1,9 @@
 export const PLANT_CATEGORIES = {
-    ALL: 'ALL',
-    BONSAI: 'BONSAI',
-    TROPICAL: 'TROPICAL',
-    SUCCULENT: 'SUCCULENT',
-    FLOWERING: 'FLOWERING',
+    ALL: 'all',
+    BONSAI: 'bonsai',
+    TROPICAL: 'tropical',
+    SUCCULENT: 'succulent',
+    FLOWERING: 'flowering',
 }
 
 export const PLANT_LOCATIONS ={
