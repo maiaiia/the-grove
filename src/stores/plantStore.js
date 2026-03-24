@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 import { plants as initialPlants } from '@/data/plants'
-import {PLANT_CATEGORIES} from "@/data/plantCategories.js";
 
 export const usePlantStore = defineStore('plants', {
     state: () => ({
