@@ -73,7 +73,7 @@ function formatDate(dateStr) {
 
 <style scoped>
 .profile {
-  padding: 48px;
+  padding: 10px 64px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;

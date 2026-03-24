@@ -9,7 +9,7 @@ export function createPlant(data) {
         datePlanted: data.datePlanted, //YYYY-MM-DD
         photos: data.photos ?? [],
         wateringSchedule: data.wateringSchedule,
-        lastWatered: data.lastWatered,
+        lastWatered: data.lastWatered ?? data.datePlanted,
         location: data.location,
         notes: data.notes ?? "",
 
@@ -41,7 +41,7 @@ export const plants = [
         category: PLANT_CATEGORIES.TROPICAL,
         datePlanted: "2023-03-01",
         photos: [
-            { date: "2024-03-02", url: "/monstera.jpg", description: "" }
+            { date: "2024-03-02", url: "/monstera.jpg", description: "Looking particularly gorgeous today!" }
         ],
         wateringSchedule: 2,
         lastWatered: "2026-03-20",

@@ -11,13 +11,14 @@
       <a href="/grove" class="link">My Grove</a>
       <a href="/statistics" class="link">Statistics</a>
 
-      <button class="add-btn">+ Add Plant</button>
+      <button class="add-btn" @click="open">+ Add Plant</button>
     </nav>
   </header>
 </template>
 
 <script setup>
-// nothing needed yet
+  import { useAddPlantModal } from '@/composables/useAddPlantModal'
+  const { open } = useAddPlantModal()
 </script>
 
 <style scoped>
