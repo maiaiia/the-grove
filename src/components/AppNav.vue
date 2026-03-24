@@ -9,7 +9,6 @@
     <!-- Right: Navigation -->
     <nav class="nav-links">
       <a href="/grove" class="link">My Grove</a>
-      <a href="#" class="link">Discover</a>
       <a href="/statistics" class="link">Statistics</a>
 
       <button class="add-btn">+ Add Plant</button>
