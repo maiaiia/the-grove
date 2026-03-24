@@ -1,5 +1,7 @@
 <script setup>
-defineProps({ plant: Object })
+import { useEditPlantModal } from '@/composables/useEditPlantModal'
+const { open: openEdit } = useEditPlantModal()
+const props = defineProps({ plant: Object })
 
 function formatDate(dateStr) {
   return new Date(dateStr).toLocaleDateString('en-GB', {
@@ -65,7 +67,7 @@ function formatDate(dateStr) {
       <a href="#" class="profile__btn profile__btn--outline">Care Details</a>
     </div>
     <div class="profile__actions">
-      <button class="profile__btn profile__btn--primary">✎ Edit Plant Details</button>
+      <button class="profile__btn profile__btn--primary" @click="openEdit(plant)">Edit Plant Details</button>
       <button class="profile__btn profile__btn--danger">Remove from Grove</button>
     </div>
   </div>

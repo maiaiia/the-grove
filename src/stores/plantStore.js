@@ -21,5 +21,9 @@ export const usePlantStore = defineStore('plants', {
         addPlant(plant) {
             this.plants.push(plant)
         },
+        updatePlant(updated) {
+            const index = this.plants.findIndex(p => p.id === updated.id)
+            if (index !== -1) this.plants[index] = updated
+        },
     },
 })
