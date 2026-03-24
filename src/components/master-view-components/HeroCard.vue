@@ -34,7 +34,7 @@ defineProps({ plant: Object })
 .hero-card__overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(44, 59, 34, 0.85) 30%, transparent 70%);
+  background: linear-gradient(to top, rgba(44, 59, 34, 0.85) 10%, transparent 80%);
   display: flex;
   align-items: flex-end;
 }
