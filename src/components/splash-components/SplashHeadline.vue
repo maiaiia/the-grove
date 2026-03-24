@@ -1,5 +1,9 @@
 <script setup>
+import {useRouter} from "vue-router";
 
+const router = useRouter()
+
+const enterGrove = () => router.push(`/grove`)
 </script>
 
 <template>
@@ -30,7 +34,7 @@
         collection take shape over time.
       </p>
       <div class="headline__actions">
-        <button class="btn btn--primary">Enter the Grove</button>
+        <button class="btn btn--primary" @click="enterGrove">Enter the Grove</button>
         <button class="btn btn--outline">Learn More</button>
       </div>
     </div>
