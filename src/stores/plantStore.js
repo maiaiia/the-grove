@@ -8,9 +8,7 @@ export const usePlantStore = defineStore('plants', {
     }),
 
     getters: {
-        bonsaiPlants: (state) =>
-            state.plants.filter(p => p.category === PLANT_CATEGORIES.BONSAI),
-        byCategory: (state, category) =>
+        byCategory: (state) => (category) =>
             state.plants.filter(p => p.category === category),
     },
 

@@ -19,11 +19,11 @@ export function createPlant(data) {
             return Math.floor((now - start) / (1000 * 60 * 60 * 24 * 365))
         },
         get sortedPhotos() {
-            return [...this.photos].sort((a, b) => b.date.localeCompare(a.date))
+            return [...this.photos].sort((a, b) => a.date.localeCompare(b.date))
         },
         get latestPhoto() {
             if (!this.photos || !this.photos.length) return null
-            return this.sortedPhotos[0]
+            return this.sortedPhotos[this.photos.length-1]
         },
         get image() { //TODO - refactor
             if (this.latestPhoto)
