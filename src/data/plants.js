@@ -29,11 +29,6 @@ export function createPlant(data) {
             if (this.latestPhoto)
                 return this.latestPhoto.url
             return null
-        },
-        get lastPhotoDate() { //TODO - refactor maybe
-            if (this.latestPhoto)
-                return this.latestPhoto.date
-            return null
         }
     }
 }
