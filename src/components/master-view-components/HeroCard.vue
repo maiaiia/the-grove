@@ -29,6 +29,14 @@ const goToPlant = () => router.push(`/plant/${props.plant.id}`)
   overflow: hidden;
   aspect-ratio: 2 / 3;
   cursor: pointer;
+
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.hero-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
 }
 
 .hero-card__image {
