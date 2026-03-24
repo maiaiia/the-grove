@@ -1,9 +1,14 @@
 <script setup>
-defineProps({ plant: Object })
+import {useRouter} from "vue-router";
+
+const props = defineProps({plant: Object})
+const router = useRouter()
+
+const goToPlant = () => router.push(`/plant/${props.plant.id}`)
 </script>
 
 <template>
-  <div class="hero-card">
+  <div class="hero-card" @click="goToPlant">
     <img :src="plant.image" :alt="plant.name" class="hero-card__image" />
     <div class="hero-card__overlay">
       <div class="hero-card__info">
@@ -23,14 +28,18 @@ defineProps({ plant: Object })
   border-radius: 12px;
   overflow: hidden;
   aspect-ratio: 2 / 3;
+  cursor: pointer;
 }
 
 .hero-card__image {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 0.4s ease;
 }
-
+.hero-card:hover .hero-card__image {
+  transform: scale(1.04);
+}
 .hero-card__overlay {
   position: absolute;
   inset: 0;

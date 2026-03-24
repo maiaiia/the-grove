@@ -1,9 +1,15 @@
 <script setup>
-defineProps({ plant: Object })
+import {useRouter} from "vue-router";
+
+const props = defineProps({plant: Object})
+const router = useRouter()
+
+const goToPlant = () => router.push(`/plant/${props.plant.id}`)
+
 </script>
 
 <template>
-  <div class="plant-card">
+  <div class="plant-card" @click="goToPlant">
     <div class="plant-card__image-wrapper">
       <img :src="plant.image" :alt="plant.name" class="plant-card__image" />
     </div>
