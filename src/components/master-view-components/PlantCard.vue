@@ -69,7 +69,7 @@ const goToPlant = () => router.push(`/plant/${props.plant.id}`)
 .plant-card__age {
   font-family: var(--space-mono), monospace;
   font-size: 11px;
-  color: var(--mongoose);
+  color: var(--avocado);
 }
 
 .plant-card__latin {
