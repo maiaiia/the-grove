@@ -11,7 +11,10 @@ const goToPlant = () => router.push(`/plant/${props.plant.id}`)
 <template>
   <div class="plant-card" @click="goToPlant">
     <div class="plant-card__image-wrapper">
-      <img :src="plant.image" :alt="plant.name" class="plant-card__image" />
+      <img v-if="plant.image" :src="plant.image" :alt="plant.name" class="plant-card__image" />
+      <div v-else class="plant-card__placeholder">
+        <img src="/grovelogo.svg" alt="grove logo" class="plant-card__placeholder-logo" />
+      </div>
     </div>
     <div class="plant-card__body">
       <div class="plant-card__row">
@@ -86,5 +89,21 @@ const goToPlant = () => router.push(`/plant/${props.plant.id}`)
   color: var(--avocado);
   font-style: italic;
   margin: 0;
+}
+
+.plant-card__placeholder{
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--avocado) 25%, transparent);
+}
+
+.plant-card__placeholder-logo {
+  width: 10vw;
+  height: 10vw;
+  object-fit: contain;
+  opacity: 0.7;
 }
 </style>

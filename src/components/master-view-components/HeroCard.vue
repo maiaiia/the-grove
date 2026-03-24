@@ -9,7 +9,10 @@ const goToPlant = () => router.push(`/plant/${props.plant.id}`)
 
 <template>
   <div class="hero-card" @click="goToPlant">
-    <img :src="plant.image" :alt="plant.name" class="hero-card__image" />
+    <img v-if="plant.image" :src="plant.image" :alt="plant.name" class="hero-card__image" />
+    <div v-else class="hero-card__placeholder">
+      <img src="/grovelogo.svg" alt="grove logo" class="hero-card__placeholder-logo" />
+    </div>
     <div class="hero-card__overlay">
       <div class="hero-card__info">
         <h2 class="hero-card__name">{{ plant.name }}</h2>
@@ -87,5 +90,20 @@ const goToPlant = () => router.push(`/plant/${props.plant.id}`)
   font-family: var(--space-mono), monospace;
   font-size: 12px;
   color: var(--rodeo-dust);
+}
+
+.hero-card__placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--avocado) 25%, transparent);
+}
+.hero-card__placeholder-logo {
+  width: 20vw;
+  height: 20vw;
+  object-fit: contain;
+  opacity: 0.7;
 }
 </style>
