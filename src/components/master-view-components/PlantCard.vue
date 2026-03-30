@@ -106,4 +106,24 @@ const goToPlant = () => router.push(`/plant/${props.plant.id}`)
   object-fit: contain;
   opacity: 0.7;
 }
+
+
+.plant-card__image-wrapper {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  aspect-ratio: unset;
+}
+
+.plant-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.plant-card__body {
+  flex-shrink: 0;
+  padding: 10px 12px;
+}
+
 </style>
