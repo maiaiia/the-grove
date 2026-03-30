@@ -38,4 +38,10 @@ const props = defineProps({
   gap: 24px;
   min-height: 0;
 }
+
+@media (max-width: 768px) {
+  .visual-view-content {
+    grid-template-columns: 1fr;
+  }
+}
 </style>

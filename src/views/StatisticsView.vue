@@ -134,6 +134,23 @@ const uniqueLocations = computed(() => {
   gap: 24px;
 }
 
+.charts-grid > * {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+.charts-grid :deep(canvas),
+.charts-grid :deep(svg) {
+  max-width: 100% !important;
+  height: auto !important;
+}
+
+.charts-grid :deep(> div) {
+  max-width: 100%;
+  overflow: hidden;
+}
+
 @media (max-width: 1200px) {
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -142,5 +159,21 @@ const uniqueLocations = computed(() => {
   .charts-grid {
     grid-template-columns: 1fr;
   }
+}
+
+@media (max-width: 768px) {
+  .statistics-page {
+    padding: 20px 16px;
+  }
+
+  .page-title {
+    font-size: 36px;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
 }
 </style>

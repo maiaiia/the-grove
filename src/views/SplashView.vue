@@ -29,7 +29,6 @@ import SplashStats from "@/components/splash-components/SplashStats.vue";
   background-color: var(--parchment);
 }
 
-/* 2. Switch to horizontal ONLY for large screens */
 @media (min-width: 1024px) {
   .splash-view {
     flex-direction: row;
@@ -45,16 +44,16 @@ import SplashStats from "@/components/splash-components/SplashStats.vue";
   align-self: center;
 }
 
-/* Ensure the headline takes priority on mobile */
+
 .headline {
   width: 100%;
-  text-align: center; /* Center text for mobile aesthetics */
+  text-align: center;
 }
 
 @media (min-width: 1024px) {
   .headline {
     width: auto;
-    text-align: left; /* Back to left-aligned for desktop */
+    text-align: left;
   }
 }
 </style>

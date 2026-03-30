@@ -210,4 +210,12 @@ function formatDate(dateStr) {
 
 .profile__btn--primary:hover { opacity: 0.85; }
 .profile__btn--danger:hover { border-color: var(--burnt-umber); }
+
+@media (max-width: 768px) {
+  .profile {
+    padding: 20px 24px;
+    width: 100vw;
+    overflow-y: auto;
+  }
+}
 </style>

@@ -87,4 +87,13 @@ const emit = defineEmits(['update:currentView'])
   font-style: italic;
   color: var(--marigold);
 }
+
+@media (max-width: 768px) {
+  .eyebrow {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 10px;
+  }
+}
 </style>

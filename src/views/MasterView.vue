@@ -6,15 +6,24 @@ import GroveEyebrow from "@/components/master-view-components/GroveEyebrow.vue"
 import GrovePagination from "@/components/master-view-components/GrovePagination.vue"
 import GroveVisual from "@/components/master-view-components/GroveVisual.vue"
 import GroveTable from "@/components/master-view-components/GroveTable.vue"
+import { getCookie, setCookie } from "@/utils/cookieHelper.js";
 
 const store = usePlantStore()
-const viewMode = ref('visual')
-const currentPage = ref(1)
+const savedView = getCookie('grove_view')
+const viewMode = ref(savedView || 'visual')
+const previousPageNumber = getCookie('previousPageNumber')
+const currentPage = ref( previousPageNumber || 1)
 
 const perPage = computed(() => viewMode.value === 'visual' ? 5 : 10)
 const totalPages = computed(() => Math.ceil(store.plants.length / perPage.value))
 
-watch(viewMode, () => currentPage.value = 1)
+watch(viewMode, (newVal) => {
+  setCookie('grove_view', newVal);
+  currentPage.value = 1;
+})
+watch(currentPage, (newVal) =>{
+  setCookie('previousPageNumber', newVal);
+})
 
 const paginatedPlants = computed(() => {
   const start = (currentPage.value - 1) * perPage.value
@@ -23,7 +32,6 @@ const paginatedPlants = computed(() => {
 
 const heroPlant = computed(() => paginatedPlants.value[0])
 const gridPlants = computed(() => paginatedPlants.value.slice(1))
-
 
 const handleSelect = (plant) => {
   console.log('Navigate to detail for:', plant.name)
@@ -65,29 +73,19 @@ const handleSelect = (plant) => {
 
 <style scoped>
 .grove {
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
   background-color: var(--parchment);
-  overflow-y: auto;
 }
 
 .grove__inner {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 20px 16px;
-  gap: 24px;
-}
-
-@media (min-width: 1024px) {
-  .grove {
-    height: 100vh;
-    overflow: hidden;
-  }
-
-  .grove__inner {
-    padding: 24px 48px;
-    justify-content: space-between;
-  }
+  padding: 24px 48px;
+  gap: 20px;
+  min-height: 0;
 }
 </style>

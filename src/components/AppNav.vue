@@ -31,12 +31,10 @@
   border-bottom: 1px solid var(--rodeo-dust);
 }
 
-/* Left side */
 .logo {
   display: flex;
   align-items: center;
   gap: 10px;
-
 }
 
 .icon {
@@ -60,7 +58,6 @@
   text-decoration: none;
 }
 
-/* Right side */
 .nav-links {
   display: flex;
   align-items: center;
@@ -81,7 +78,6 @@
   color: #2f4f3f;
 }
 
-/* Button */
 .add-btn {
   background: var(--green-kelp);
   color: var(--cream);
@@ -101,5 +97,25 @@
 
 .add-btn:hover {
   opacity: 0.9;
+}
+@media (max-width: 768px) {
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 10px 10px;
+    border-bottom: 1px solid var(--rodeo-dust);
+  }
+
+  .logo {
+    gap: 5px;
+  }
+  .nav-links {
+    gap: 15px;
+  }
+  .link {
+    font-size: 10px
+  }
 }
 </style>
