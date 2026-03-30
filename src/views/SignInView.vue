@@ -52,7 +52,7 @@ const goToRegister = () => {
             <input type="checkbox" v-model="rememberMe" />
             <span>Remember me</span>
           </label>
-          <a href="#" class="forgot-link">Forgot password?</a>
+          <router-link to="#" class="forgot-link">Forgot password?</router-link>
         </div>
 
         <button type="submit" class="submit-btn">

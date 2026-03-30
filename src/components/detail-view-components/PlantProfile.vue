@@ -67,7 +67,7 @@ function formatDate(dateStr) {
     </div>
     <div class="profile__section">
 
-      <a href="#" class="profile__btn profile__btn--outline">Care Details</a>
+      <router-link to="#" class="profile__btn profile__btn--outline">Care Details</router-link>
     </div>
     <div class="profile__actions">
       <button class="profile__btn profile__btn--primary" @click="openEdit(plant)">Edit Plant Details</button>

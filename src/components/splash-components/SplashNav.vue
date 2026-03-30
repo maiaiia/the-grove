@@ -2,9 +2,9 @@
   <header class="splash-navbar">
 
     <nav class="nav-links">
-      <a href="/grove" class="link">About</a>
-      <a href="#" class="link">Community</a>
-      <a href="/sign-in" class="link">Sign In</a>
+      <router-link to="/grove" class="link">About</router-link>
+      <router-link to="#" class="link">Community</router-link>
+      <router-link to="/sign-in" class="link">Sign In</router-link>
     </nav>
   </header>
 </template>

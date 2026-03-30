@@ -3,13 +3,13 @@
     <!-- Left: Logo -->
     <div class="logo">
       <img src="/src/assets/grovelogo.svg" width="46px" height="46px">
-      <span class="brand"><a href = "/">The Grove</a></span>
+      <span class="brand"><router-link to= "/">The Grove</router-link></span>
     </div>
 
     <!-- Right: Navigation -->
     <nav class="nav-links">
-      <a href="/grove" class="link">My Grove</a>
-      <a href="/statistics" class="link">Statistics</a>
+      <router-link to="/grove" class="link">My Grove</router-link>
+      <router-link to="/statistics" class="link">Statistics</router-link>
 
       <button class="add-btn" @click="open">+ Add Plant</button>
     </nav>

@@ -9,30 +9,31 @@ import AppNav from "@/components/AppNav.vue";
 import StatsBreadcrumb from "@/components/stats-view-components/StatsBreadcrumb.vue";
 import WateringFrequency from "@/components/stats-view-components/WateringFrequency.vue";
 
-const plants = usePlantStore().plants
+const store = usePlantStore();
+const plants = computed(() => store.plants);
 
-const totalPlants = computed(() => plants.length);
+const totalPlants = computed(() => plants.value.length);
 
 const oldestPlant = computed(() => {
-  if (!plants.length) return { age: 0 };
-  return plants.reduce((oldest, plant) =>
+  if (!plants.value.length) return { age: 0 };
+  return plants.value.reduce((oldest, plant) =>
       plant.age > oldest.age ? plant : oldest
   );
 });
 
 const totalPhotos = computed(() => {
-  return plants.reduce((sum, plant) =>
+  return plants.value.reduce((sum, plant) =>
       sum + (plant.photos?.length || 0), 0
   );
 });
 
 const avgPhotosPerPlant = computed(() => {
-  if (!plants.length) return 0;
+  if (!plants.value.length) return 0;
   return Math.round(totalPhotos.value / plants.value.length);
 });
 
 const uniqueLocations = computed(() => {
-  return new Set(plants.map(p => p.location)).size;
+  return new Set(plants.value.map(p => p.location)).size;
 });
 </script>
 
