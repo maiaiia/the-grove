@@ -10,7 +10,7 @@ import SplashStats from "@/components/splash-components/SplashStats.vue";
     <SplashNav />
   <div class="splash-view">
     <SplashHeadline />
-    <PlantShowcase maxWidth="800px"/>
+    <PlantShowcase />
     <SplashStats />
   </div>
 </template>
@@ -22,6 +22,7 @@ import SplashStats from "@/components/splash-components/SplashStats.vue";
   justify-content: space-between;
 
   padding: 5vh 5vw;
+  width: 100%;
 }
 .stats{
   align-self: center;

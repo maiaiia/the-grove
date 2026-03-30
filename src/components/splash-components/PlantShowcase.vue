@@ -68,6 +68,7 @@ const currentSeason = seasons[seasonIndex]
 .plant-showcase {
   position: relative;
   width: 100%;
+  min-width: 300px;
   max-width: 900px;
   aspect-ratio: 4 / 3;
   border-radius: 24px;
