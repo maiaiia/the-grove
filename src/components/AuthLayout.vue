@@ -180,4 +180,18 @@ import BrandDescription from "@/components/BrandDescription.vue";
   border-top: none;
   border-color: var(--mongoose);
 }
+
+@media (max-width: 768px) {
+  .auth-container {
+    grid-template-columns: 1fr;
+  }
+
+  .left-panel {
+    display: none;
+  }
+
+  .main-heading {
+    font-size: 36px;
+  }
+}
 </style>

@@ -96,4 +96,33 @@ const brandColor = computed(() => props.theme === 'dark' ? 'var(--cream)' : 'var
   opacity: 0.7;
   background: var(--marigold);
 }
+@media (max-width: 768px) {
+  .logo img {
+    height: 30vw;
+  }
+
+  .brand {
+    font-size: 42px;
+    line-height: 38px;
+    letter-spacing: -1px;
+  }
+
+  .eyebrow, .tagline {
+    letter-spacing: 1px;
+    font-size: 8px;
+  }
+
+  .divider {
+    width: 15px;
+  }
+
+  .logo {
+    gap: 10px;
+    align-items: center;
+  }
+
+  .brand-logo {
+    gap: 8px;
+  }
+}
 </style>

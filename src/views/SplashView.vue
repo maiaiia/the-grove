@@ -18,17 +18,43 @@ import SplashStats from "@/components/splash-components/SplashStats.vue";
 <style scoped>
 .splash-view {
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
 
-  padding: 5vh 5vw;
+  padding: 80px 24px;
   width: 100%;
+  min-height: 100vh;
+  background-color: var(--parchment);
 }
-.stats{
+
+/* 2. Switch to horizontal ONLY for large screens */
+@media (min-width: 1024px) {
+  .splash-view {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    height: 100vh;
+    padding: 5vh 5vw;
+    overflow: hidden;
+  }
+}
+
+.stats {
   align-self: center;
 }
 
+/* Ensure the headline takes priority on mobile */
 .headline {
-  justify-self: stretch;
+  width: 100%;
+  text-align: center; /* Center text for mobile aesthetics */
+}
+
+@media (min-width: 1024px) {
+  .headline {
+    width: auto;
+    text-align: left; /* Back to left-aligned for desktop */
+  }
 }
 </style>
