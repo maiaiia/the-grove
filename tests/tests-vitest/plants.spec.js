@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
-import { createPlant } from '@/data/plants'
-import { PLANT_CATEGORIES, PLANT_LOCATIONS } from '@/data/plantCategories'
+import { createPlant } from '@/data/plants.js'
+import { PLANT_CATEGORIES, PLANT_LOCATIONS } from '@/data/plantCategories.js'
 const validData = {
     id: 1,
     name: 'Monstera Rex',

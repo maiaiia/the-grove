@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
-import { usePlantStore } from '@/stores/plantStore'
-import { createPlant } from '@/data/plants'
-import { PLANT_CATEGORIES, PLANT_LOCATIONS } from '@/data/plantCategories'
+import { usePlantStore } from '@/stores/plantStore.js'
+import { createPlant } from '@/data/plants.js'
+import { PLANT_CATEGORIES, PLANT_LOCATIONS } from '@/data/plantCategories.js'
 
 
 const makePlant = (overrides = {}) => createPlant({
