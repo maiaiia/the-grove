@@ -1,8 +1,8 @@
 <script setup>
 
-import AddPlantModal from "@/components/AddPlantModal.vue";
-import EditPlantModal from "@/components/EditPlantModal.vue";
-import DeletePlantModal from "@/components/DeletePlantModal.vue";
+import AddPlantModal from "@/components/modals/AddPlantModal.vue";
+import EditPlantModal from "@/components/modals/EditPlantModal.vue";
+import DeletePlantModal from "@/components/modals/DeletePlantModal.vue";
 </script>
 
 <template>

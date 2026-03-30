@@ -1,6 +1,6 @@
 <script setup>
-import { useDeletePlantModal } from '@/composables/useDeletePlantModal'
-import { usePlantStore } from '@/stores/plantStore'
+import { useDeletePlantModal } from '@/composables/useDeletePlantModal.js'
+import { usePlantStore } from '@/stores/plantStore.js'
 import { useRouter } from 'vue-router'
 
 const { isOpen, plantToDelete, close } = useDeletePlantModal()
