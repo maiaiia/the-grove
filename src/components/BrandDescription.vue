@@ -1,3 +1,12 @@
+<script setup>
+import {computed, useCssVars} from "vue";
+
+const props = defineProps({
+  theme: {type: String, default: 'light' }
+})
+const textColor = computed(() => props.theme === 'dark' ? 'var(--parchment)' : 'var(--mongoose)');
+</script>
+
 <template>
   <p class="description">
     Document every leaf, every season, every slow transformation.
@@ -11,7 +20,7 @@
   font-family: var(--space-mono), monospace;
   font-size: 13px;
   line-height: 1.9;
-  color: var(--mongoose);
+  color: v-bind(textColor);
   border-left: 2px solid var(--marigold);
   padding-left: 16px;
   margin: 0;

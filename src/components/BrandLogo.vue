@@ -1,3 +1,12 @@
+<script setup>
+import {computed, useCssVars} from "vue";
+
+const props = defineProps({
+  theme: {type: String, default: 'light' }
+})
+const brandColor = computed(() => props.theme === 'dark' ? 'var(--cream)' : 'var(--green-kelp)');
+</script>
+
 <template>
   <div class="brand-logo">
     <div class="eyebrow">
@@ -6,7 +15,10 @@
     </div>
 
     <div class="logo">
-      <img src="/src/assets/logo-transparent.svg" width="160px" height="160px" alt="logo" />
+      <img
+          :src="theme === 'dark' ? '/src/assets/grovelogo.svg' : '/src/assets/logo-transparent.svg'"
+          alt="logo"
+      />
       <div class="brand">
         <p>The</p>
         <p><i><b>Grove</b></i></p>
@@ -61,12 +73,13 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  color: var(--green-kelp);
   font-family: var(--playfair-display), serif;
   font-size: 86px;
   font-weight: 900;
   line-height: 80px;
   letter-spacing: -3px;
+
+  color: v-bind(brandColor);
 }
 
 .brand i { color: var(--marigold); }

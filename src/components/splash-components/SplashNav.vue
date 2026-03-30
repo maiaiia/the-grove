@@ -4,7 +4,7 @@
     <nav class="nav-links">
       <a href="/grove" class="link">About</a>
       <a href="#" class="link">Community</a>
-      <a href="/grove" class="link">Sign In</a>
+      <a href="/sign-in" class="link">Sign In</a>
     </nav>
   </header>
 </template>
