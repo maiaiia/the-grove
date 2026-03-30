@@ -1,8 +1,23 @@
 <script setup>
-const props = defineProps({ current: Number, total: Number })
+import {computed} from "vue";
+
+const props = defineProps({
+  current: Number,
+  total: Number,
+  itemsPerPage: {type: Number, default: 5},
+  totalItems: Number
+})
 const emit = defineEmits(['change'])
 
-const pages = Array.from({ length: props.total }, (_, i) => i + 1)
+const pages = computed(() => {
+  return Array.from({ length: props.total }, (_, i) => i + 1)
+})
+
+const rangeLabel = computed(() => {
+  const start = (props.current - 1) * props.itemsPerPage + 1
+  const end = Math.min(props.current * props.itemsPerPage, props.totalItems)
+  return `${start}–${end} of ${props.totalItems}`
+})
 </script>
 
 <template>
@@ -15,7 +30,7 @@ const pages = Array.from({ length: props.total }, (_, i) => i + 1)
         :class="{ active: p === current }"
         @click="emit('change', p)"
     >{{ p }}</button>
-    <span class="pagination__info">1–5 of {{ total * 5 }}</span>
+    <span class="pagination__info">{{ rangeLabel }}</span>
     <button class="pagination__arrow" :disabled="current === total" @click="emit('change', current + 1)">›</button>
   </div>
 </template>

@@ -24,6 +24,7 @@ const paginatedPlants = computed(() => {
 const heroPlant = computed(() => paginatedPlants.value[0])
 const gridPlants = computed(() => paginatedPlants.value.slice(1))
 
+
 const handleSelect = (plant) => {
   console.log('Navigate to detail for:', plant.name)
 }
@@ -54,6 +55,8 @@ const handleSelect = (plant) => {
       <GrovePagination
           :current="currentPage"
           :total="totalPages"
+          :total-items="store.plants.length"
+          :items-per-page="perPage"
           @change="currentPage = $event"
       />
     </div>
