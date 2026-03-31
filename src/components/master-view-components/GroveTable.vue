@@ -21,28 +21,33 @@ const goToPlant = (plant) => router.push(`/plant/${plant.id}`)
         <th>LAST WATERED</th>
       </tr>
       </thead>
-      <tbody>
-      <tr v-for="plant in plants" :key="plant.id" @click="goToPlant(plant)">
-        <td class="cell-plant">
-          <img :src="plant.image" class="mini-thumb" />
-          <div>
-            <p class="name">{{ plant.name }}</p>
-            <p class="latin">{{ plant.latinName }}</p>
-          </div>
-        </td>
-        <td><span class="tag">{{ plant.category }}</span></td>
-        <td>
-          <div class="age-bar">
-            <div class="bar-fill" :style="{ width: (plant.age / 20) * 100 + '%' }"></div>
-            <span class="age-label">{{ plant.age }}y</span>
-          </div>
-        </td>
-        <td>{{ plant.wateringSchedule }}</td>
-        <td>{{ plant.location }}</td>
-        <td class="bold">{{ plant.photos?.length || 0 }}</td>
-        <td class="mongoose">{{ plant.lastWatered }}</td>
-      </tr>
-      </tbody>
+      <TransitionGroup name="table-row" tag="tbody" appear>
+        <tr
+            v-for="(plant, index) in plants"
+            :key="plant.id"
+            @click="goToPlant(plant)"
+            :style="{ '--row-index': index }"
+        >
+          <td class="cell-plant">
+            <img :src="plant.image" class="mini-thumb" />
+            <div>
+              <p class="name">{{ plant.name }}</p>
+              <p class="latin">{{ plant.latinName }}</p>
+            </div>
+          </td>
+          <td><span class="tag">{{ plant.category }}</span></td>
+          <td>
+            <div class="age-bar">
+              <div class="bar-fill" :style="{ width: (plant.age / 20) * 100 + '%' }"></div>
+              <span class="age-label">{{ plant.age }}y</span>
+            </div>
+          </td>
+          <td>{{ plant.wateringSchedule }}</td>
+          <td>{{ plant.location }}</td>
+          <td class="bold">{{ plant.photos?.length || 0 }}</td>
+          <td class="mongoose">{{ plant.lastWatered }}</td>
+        </tr>
+      </TransitionGroup>
     </table>
   </div>
 </template>
@@ -63,7 +68,11 @@ th {
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
-tr { border-bottom: 1px solid #eee; cursor: pointer; transition: background 0.2s; }
+tr {
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  transition: background 0.2s;
+}
 tr:hover { background: #f9f7f2; }
 td { padding: 12px 16px; font-family: var(--space-mono), monospace; font-size: 13px; color: var(--green-kelp); }
 .mini-thumb { width: 45px; height: 45px; object-fit: cover; border-radius: 2px; margin-right: 12px; }
@@ -95,4 +104,29 @@ td { padding: 12px 16px; font-family: var(--space-mono), monospace; font-size: 1
 }
 .bar-fill { height: 6px; background: var(--avocado); border-radius: 3px;}
 .age-label { font-size: 10px; color: var(--avocado); }
+
+/* Table row staggered transitions */
+.table-row-enter-active {
+  transition: all 0.5s ease;
+  transition-delay: calc(var(--row-index) * 0.05s);
+}
+
+.table-row-leave-active {
+  transition: all 0.3s ease;
+  transition-delay: calc(var(--row-index) * 0.03s);
+}
+
+.table-row-enter-from {
+  opacity: 0;
+  transform: translateX(-30px);
+}
+
+.table-row-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
+}
+
+.table-row-move {
+  transition: transform 0.4s ease;
+}
 </style>
