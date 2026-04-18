@@ -15,9 +15,6 @@ const goToPlant = (plant) => router.push(`/plant/${plant.id}`)
         <th>PLANT</th>
         <th>CATEGORY</th>
         <th>AGE</th>
-        <th>WATERING</th>
-        <th>LOCATION</th>
-        <th>PHOTOS</th>
         <th>LAST WATERED</th>
       </tr>
       </thead>
@@ -42,9 +39,6 @@ const goToPlant = (plant) => router.push(`/plant/${plant.id}`)
               <span class="age-label">{{ plant.age }}y</span>
             </div>
           </td>
-          <td>{{ plant.wateringSchedule }}</td>
-          <td>{{ plant.location }}</td>
-          <td class="bold">{{ plant.photos?.length || 0 }}</td>
           <td class="mongoose">{{ plant.lastWatered }}</td>
         </tr>
       </TransitionGroup>
