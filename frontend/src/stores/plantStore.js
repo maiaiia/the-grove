@@ -53,17 +53,10 @@ export const usePlantStore = defineStore('plants', {
                 this.loading = false;
             }
         },
-
-        // Find plant by ID
-        async find(id) {
-            return this.plants.find(p => p.id == id)
-        },
-
         async addPlant(plant) {
             this.plants.push(plant)
             // TODO: await plantApi.createPlant(plant)
         },
-
 
         async updatePlant(updated) {
             const index = this.plants.findIndex(p => p.id === updated.id)
@@ -72,8 +65,7 @@ export const usePlantStore = defineStore('plants', {
                 // TODO: await plantApi.updatePlant(updated.id, updated)
             }
         },
-
-
+        
         async deletePlant(id) {
             this.plants = this.plants.filter(p => p.id !== id)
             // TODO: await plantApi.deletePlant(id)
