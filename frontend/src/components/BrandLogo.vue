@@ -16,8 +16,9 @@ const brandColor = computed(() => props.theme === 'dark' ? 'var(--cream)' : 'var
 
     <div class="logo">
       <img
-          :src="theme === 'dark' ? '/src/assets/grovelogo.svg' : '/src/assets/logo-transparent.svg'"
+          :src="theme === 'dark' ? '/grovelogo.svg' : '/logo-transparent.svg'"
           alt="logo"
+          height="160"
       />
       <div class="brand">
         <p>The</p>
