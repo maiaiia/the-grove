@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { usePlantStore } from '@/stores/plantStore.js'
+import { plants } from '@/data/plants.js'
 
 defineProps({
   maxWidth: {
@@ -9,14 +9,13 @@ defineProps({
   }
 })
 
-const store = usePlantStore()
 const currentIndex = ref(0)
-const currentPlant = computed(() => store.plants[currentIndex.value])
+const currentPlant = computed(() => plants[currentIndex.value])
 
 let interval
 onMounted(() => {
   interval = setInterval(() => {
-    currentIndex.value = (currentIndex.value + 1) % store.plants.length
+    currentIndex.value = (currentIndex.value + 1) % plants.length
   }, 5000)
 })
 onUnmounted(() => clearInterval(interval))
@@ -52,7 +51,7 @@ const currentSeason = seasons[seasonIndex]
       </div>
       <div class="plant-season__dots">
         <span
-            v-for="(_, i) in store.plants.length"
+            v-for="(_, i) in plants.length"
             :key="i"
             class="dot"
             :class="{ active: i === currentIndex }"
