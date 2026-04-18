@@ -1,4 +1,5 @@
 import datetime
+
 from backend.src.model.plant import Plant
 from backend.src.model.plant_category import PlantCategory
 from backend.src.model.plant_location import PlantLocation
@@ -143,3 +144,5 @@ class PlantRepository:
 
     def get_plant(self, plant_id: int) -> Plant | None:
         return self.__plants.get(plant_id)
+
+plant_repository = PlantRepository()

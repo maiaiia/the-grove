@@ -26,7 +26,7 @@ class Plant:
             self.last_watered = self.date_planted
 
     @property
-    def age_years(self) -> int:
+    def age(self) -> int:
         today = datetime.date.today()
         return (today - self.date_planted).days // 365
 

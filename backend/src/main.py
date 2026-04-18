@@ -1,9 +1,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from starlette.staticfiles import StaticFiles
+from backend.src.router.router import plant_router
 
-app = FastAPI()
-app.mount("/images", StaticFiles(directory="images"), name="images")
+app = FastAPI(title = "The Grove API")
+from fastapi.staticfiles import StaticFiles
+
+app.mount("/backend/src/images", StaticFiles(directory="backend/src/images"), name="images")
 
 app.add_middleware(
     CORSMiddleware,
@@ -13,6 +15,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(plant_router)
+
 @app.get("/")
-def read_root():
-    return {"status": "ok"}
+def root():
+    return {"message": "The Grove's API is working!"}

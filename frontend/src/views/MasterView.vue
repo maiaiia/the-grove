@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, watch } from 'vue'
+import {ref, computed, watch, onMounted} from 'vue'
 import { usePlantStore } from '@/stores/plantStore.js'
 import AppNav from "@/components/AppNav.vue"
 import GroveEyebrow from "@/components/master-view-components/GroveEyebrow.vue"
@@ -9,6 +9,7 @@ import GroveTable from "@/components/master-view-components/GroveTable.vue"
 import { getCookie, setCookie } from "@/utils/cookieHelper.js";
 
 const store = usePlantStore()
+onMounted(() => store.fetchPlants())
 const savedView = getCookie('grove_view')
 const viewMode = ref(savedView || 'visual')
 const previousPageNumber = getCookie('previousPageNumber')

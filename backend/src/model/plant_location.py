@@ -1,6 +1,6 @@
 from enum import Enum
 
 class PlantLocation(Enum):
-    OUTDOORS    = 'O'
-    INDOORS     = 'I'
-    WINDOWSILL  = 'W'
+    OUTDOORS    = 'Outdoors'
+    INDOORS     = 'Indoors'
+    WINDOWSILL  = 'Windowsill'

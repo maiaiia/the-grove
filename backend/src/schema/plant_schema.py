@@ -1,31 +1,37 @@
-from datetime import datetime
-from pydantic import BaseModel
+from datetime import date
+from pydantic import BaseModel, ConfigDict
+from pydantic.alias_generators import to_camel
 
 from backend.src.model.plant_category import PlantCategory
 from backend.src.model.plant_location import PlantLocation
 
+class BaseModelWithCaseConversion(BaseModel):
+    model_config = ConfigDict(
+        alias_generator=to_camel,
+        populate_by_name=True,
+        from_attributes=True
+    )
 
-class PlantPhotoResponse(BaseModel):
+class PlantPhotoResponse(BaseModelWithCaseConversion):
     url: str
     description: str
-    date: datetime.date
+    date: date
 
-
-class PlantSummaryResponse(BaseModel):
+class PlantSummaryResponse(BaseModelWithCaseConversion):
     id: int
     name: str
     latin_name: str
     category: PlantCategory
-    location: PlantLocation
-    date_planted: datetime.date
-    last_watered: datetime.date
-    watering_schedule: int
-    needs_watering: bool
-    age_years: int
-    photo_count: int
-    cover_photo: PlantPhotoResponse | None  # first photo, if any
+    last_watered: date
+    age: int
+    image: PlantPhotoResponse | None
+    #needs_watering: bool
 
 
 class PlantDetailResponse(PlantSummaryResponse):
+    location: PlantLocation
+    date_planted: date
+    photo_count: int
+    watering_schedule: int
     notes: str
     photos: list[PlantPhotoResponse]
