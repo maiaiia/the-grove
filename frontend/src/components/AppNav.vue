@@ -2,7 +2,7 @@
   <header class="navbar">
     <!-- Left: Logo -->
     <div class="logo">
-      <img src="/grovelogo.svg" width="46px" height="46px">
+      <img src="/logo-transparent.svg" width="46px" height="46px">
       <span class="brand"><router-link to= "/">The Grove</router-link></span>
     </div>
 
