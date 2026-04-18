@@ -4,6 +4,7 @@ import { plantApi } from '@/services/api'
 export const usePlantStore = defineStore('plants', {
     state: () => ({
         plants: [],
+        currentPlant: null,
         loading: false,
         error: null,
     }),
@@ -31,8 +32,30 @@ export const usePlantStore = defineStore('plants', {
             }
         },
 
+        async fetchPlantById(id) {
+            this.loading = true;
+            try {
+                const data = await plantApi.getPlant(id);
+                this.currentPlant = {
+                    ...data,
+                    photos: data.photos?.map(p => ({
+                        ...p,
+                        url: `http://localhost:8000/${p.url}`
+                    })) || [],
+                    image: data.image?.url
+                        ? `http://localhost:8000/${data.image.url}`
+                        : '/placeholder-plant.png'
+                };
+            } catch (err) {
+                this.error = "Could not load plant details.";
+                console.error(err);
+            } finally {
+                this.loading = false;
+            }
+        },
+
         // Find plant by ID
-        find(id) {
+        async find(id) {
             return this.plants.find(p => p.id == id)
         },
 

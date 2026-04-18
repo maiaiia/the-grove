@@ -1,7 +1,7 @@
 <script setup>
 import { useRoute } from 'vue-router'
 import { usePlantStore } from '@/stores/plantStore.js'
-import {computed, ref} from 'vue'
+import {computed, onMounted, ref} from 'vue'
 import AppNav from '@/components/AppNav.vue'
 import DetailBreadcrumb from '@/components/detail-view-components/DetailBreadcrumb.vue'
 import PlantTimeline from '@/components/detail-view-components/PlantTimeline.vue'
@@ -9,7 +9,12 @@ import PlantProfile from '@/components/detail-view-components/PlantProfile.vue'
 
 const route = useRoute()
 const store = usePlantStore()
-const plant = computed(() => store.plants.find(p => p.id == route.params.id))
+
+const plant = computed(() => store.currentPlant)
+
+onMounted(() => {
+  store.fetchPlantById(route.params.id)
+})
 
 const activeTab = ref('profile') //or 'timeline'
 </script>

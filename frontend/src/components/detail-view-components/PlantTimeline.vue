@@ -4,19 +4,21 @@ import TimelineHistoryItem from '@/components/detail-view-components/TimelineHis
 import TimelineFeatured from '@/components/detail-view-components/TimelineFeatured.vue'
 
 const props = defineProps({ plant: Object })
-
 const activePhotoIndex = ref(null)
 
-const sortedPhotos = computed(() => props.plant.sortedPhotos || [])
+const photos = computed(() => props.plant?.photos || [])
 
 const activePhoto = computed(() => {
-  const photos = sortedPhotos.value
-  if (!photos.length) return null
-  if (activePhotoIndex.value === null) return photos[photos.length - 1]
-  return photos[activePhotoIndex.value]
+  const p = photos.value;
+  if (p.length === 0) return null
+
+  const idx = activePhotoIndex.value;
+  if (idx === null) return p[p.length - 1]
+  return p[idx]
 })
 
 function yearsSincePlanted(dateStr) {
+  if (!props.plant.datePlanted || !dateStr) return 0;
   const start = new Date(props.plant.datePlanted)
   const photo = new Date(dateStr)
   return Math.floor((photo - start) / (1000 * 60 * 60 * 24 * 365))
@@ -27,9 +29,9 @@ function yearsSincePlanted(dateStr) {
   <div class="timeline">
     <p class="timeline__label">Growth Timeline</p>
 
-    <div class="timeline__history" v-if="sortedPhotos.length">
+    <div class="timeline__history" v-if="photos.length">
       <TimelineHistoryItem
-          v-for="(photo, i) in sortedPhotos"
+          v-for="(photo, i) in photos"
           :key="photo.date"
           :photo="photo"
           :year="yearsSincePlanted(photo.date)"
