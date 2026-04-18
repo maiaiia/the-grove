@@ -1,14 +1,14 @@
 import datetime
 
 class PlantPhoto:
-    def __init__(self, path: str, description: str):
-        self.__path = path
+    def __init__(self, filename: str, description: str, date = datetime.date):
+        self.__filename = filename
         self.__description = description
-        self.__date = datetime.date
+        self.__date = date
 
     @property
-    def path(self):
-        return self.__path
+    def filename(self):
+        return self.__filename
     @property
     def description(self):
         return self.__description

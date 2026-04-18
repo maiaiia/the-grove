@@ -1,9 +1,9 @@
 from dataclasses import dataclass, field
 import datetime
 
-from backend.model.plant_category import PlantCategory
-from backend.model.plant_location import PlantLocation
-from backend.model.plant_photo import PlantPhoto
+from backend.src.model.plant_category import PlantCategory
+from backend.src.model.plant_location import PlantLocation
+from backend.src.model.plant_photo import PlantPhoto
 
 
 @dataclass
