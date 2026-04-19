@@ -1,14 +1,10 @@
 from collections import Counter
 
+from backend.src.model.plant import Plant
 from backend.src.repository.plant_repository import PlantRepository, plant_repository
-from backend.src.schema.plant_mapper import PlantMapper
-from backend.src.schema.plant_schema import PlantSummaryResponse, PlantDetailResponse, \
-    StatisticsResponse, EMPTY_STATS_RESPONSE, ChartItem
-
+from backend.src.schema import PlantMapper, PlantSummaryResponse, PlantDetailResponse, StatisticsResponse, EMPTY_STATS_RESPONSE
 
 class PlantService:
-    IMAGE_FOLDER_PATH = 'backend/src/images/'
-
     def __init__(self, repository: PlantRepository):
         self.__repository = repository
 
@@ -29,6 +25,17 @@ class PlantService:
         total_photos = sum(len(p.photos) for p in all_plants if p.photos)
         unique_locations = len({p.location for p in all_plants if p.location})
 
+        age_counts = self._get_age_counts(all_plants)
+        photo_counts = self._get_photo_counts(all_plants)
+        water_counts = self._get_water_counts(all_plants)
+        type_counts = Counter(p.category for p in all_plants)
+        location_counts = Counter(p.location for p in all_plants)
+
+        return PlantMapper.to_statistics_response(total_plants, oldest_plant, total_photos, unique_locations,
+                               age_counts, type_counts, photo_counts, water_counts, location_counts)
+
+    @staticmethod
+    def _get_age_counts(all_plants: list[Plant]) -> {str: int}:
         age_counts = {
             '<1y': 0,
             '1-2y': 0,
@@ -51,7 +58,9 @@ class PlantService:
                 age_counts['10-25y'] += 1
             else:
                 age_counts['25y+'] += 1
-
+        return age_counts
+    @staticmethod
+    def _get_photo_counts(all_plants: list[Plant]) -> Counter:
         photo_counts = Counter()
         for p in all_plants:
             count = len(p.photos) if p.photos else 0
@@ -65,7 +74,9 @@ class PlantService:
                 photo_counts['6-10 photos'] += 1
             else:
                 photo_counts['10+ photos'] += 1
-
+        return photo_counts
+    @staticmethod
+    def _get_water_counts(all_plants: list[Plant]) -> Counter:
         water_counts = Counter()
         for p in all_plants:
             days = p.watering_schedule
@@ -79,22 +90,6 @@ class PlantService:
                 water_counts['Monthly'] += 1
             else:
                 water_counts['Seasonal/Occasional'] += 1
-
-        type_counts = Counter(p.category for p in all_plants)
-        location_counts = Counter(p.location for p in all_plants)
-
-        return StatisticsResponse(
-            total_plants=total_plants,
-            oldest_plant=oldest_plant,
-            total_photos=total_photos,
-            unique_locations=unique_locations,
-
-            age_distribution=[ChartItem(label=k, count=v) for k, v in age_counts.items()],
-            type_distribution=[ChartItem(label=k, count=v) for k, v in type_counts.items()],
-            photo_distribution=[ChartItem(label=k, count=v) for k, v in photo_counts.items()],
-            watering_distribution=[ChartItem(label=k, count=v) for k, v in water_counts.items()],
-            location_distribution=[ChartItem(label=k, count=v) for k, v in location_counts.items()]
-        )
-
+        return water_counts
 
 plant_service = PlantService(plant_repository)

@@ -1,6 +1,7 @@
 from backend.src.model.plant import Plant
 from backend.src.model.plant_photo import PlantPhoto
-from backend.src.schema.plant_schema import PlantPhotoResponse, PlantSummaryResponse, PlantDetailResponse
+from backend.src.schema.plant_schema import PlantPhotoResponse, PlantSummaryResponse, PlantDetailResponse, \
+    StatisticsResponse, ChartItem
 
 
 class PlantMapper:
@@ -48,4 +49,20 @@ class PlantMapper:
             watering_schedule=plant.watering_schedule,
             notes=plant.notes,
             photos=[PlantMapper._get_photo_response(photo) for photo in plant.photos],
+        )
+
+    @staticmethod
+    def to_statistics_response(total_plants, oldest_plant, total_photos, unique_locations,
+                               age_counts, type_counts, photo_counts, water_counts, location_counts) -> StatisticsResponse:
+        return StatisticsResponse(
+            total_plants=total_plants,
+            oldest_plant=oldest_plant,
+            total_photos=total_photos,
+            unique_locations=unique_locations,
+
+            age_distribution=[ChartItem(label=k, count=v) for k, v in age_counts.items()],
+            type_distribution=[ChartItem(label=k, count=v) for k, v in type_counts.items()],
+            photo_distribution=[ChartItem(label=k, count=v) for k, v in photo_counts.items()],
+            watering_distribution=[ChartItem(label=k, count=v) for k, v in water_counts.items()],
+            location_distribution=[ChartItem(label=k, count=v) for k, v in location_counts.items()]
         )
