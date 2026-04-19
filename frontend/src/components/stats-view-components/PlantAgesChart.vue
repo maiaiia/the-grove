@@ -2,35 +2,21 @@
 import { computed } from 'vue';
 
 const props = defineProps({
-  plants: {
+  ageDistribution: {
     type: Array,
-    required: true
+    required: true,
+    default: () => []
   }
 });
 
-const ageBrackets = [
-  { label: '<1y', min: 0, max: 1},
-  { label: '1-2y', min: 1, max: 2},
-  { label: '2-5y', min: 2, max: 5},
-  { label: '5-10y', min: 5, max: 10},
-  { label: '10-25y', min: 10, max: 25},
-  { label: '25y+', min: 25, max: Infinity}
-];
+const processedData = computed(() => {
+  if (!props.ageDistribution.length) return [];
 
-const ageDistribution = computed(() => {
-  const distribution = ageBrackets.map(bracket => ({
-    ...bracket,
-    count: props.plants.filter(plant => {
-      const age = plant.age;
-      return age >= bracket.min && (bracket.max === Infinity ? true : age < bracket.max);
-    }).length
-  }));
+  const maxCount = Math.max(...props.ageDistribution.map(d => d.count), 1);
 
-  const maxCount = Math.max(...distribution.map(d => d.count), 1);
-
-  return distribution.map(d => ({
-    ...d,
-    percentage: (d.count / maxCount) * 100
+  return props.ageDistribution.map(item => ({
+    ...item,
+    percentage: (item.count / maxCount) * 100
   }));
 });
 </script>
@@ -41,14 +27,12 @@ const ageDistribution = computed(() => {
     <h3 class="chart-title">Plant ages</h3>
 
     <div class="age-bars">
-      <div v-for="bracket in ageDistribution" :key="bracket.label" class="age-bar-row">
+      <div v-for="bracket in processedData" :key="bracket.label" class="age-bar-row">
         <span class="age-label">{{ bracket.label }}</span>
         <div class="bar-container">
           <div
               class="bar"
-              :style="{
-              width: `${bracket.percentage}%`,
-            }"
+              :style="{ width: `${bracket.percentage}%` }"
           ></div>
         </div>
         <span class="age-count">{{ bracket.count }}</span>

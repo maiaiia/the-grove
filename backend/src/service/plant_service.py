@@ -30,7 +30,14 @@ class PlantService:
         total_photos = sum(len(p.photos) for p in all_plants if p.photos)
         unique_locations = len({p.location for p in all_plants if p.location})
 
-        age_counts = Counter()
+        age_counts = {
+            '<1y': 0,
+            '1-2y': 0,
+            '2-5y': 0,
+            '5-10y': 0,
+            '10-25y': 0,
+            '25y+': 0
+        }
         for p in all_plants:
             age = p.age
             if age < 1:
