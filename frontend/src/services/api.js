@@ -21,7 +21,13 @@ export const plantApi = {
     async getStats() {
         const response = await api.get('/api/stats')
         return response.data
-    }
+    },
+
+    async addPlant(plantData){
+        const response = await api.post('/api/plants/add', plantData)
+        return response.data
+    },
+
 }
 
 export default api

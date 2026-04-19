@@ -1,4 +1,5 @@
 from datetime import date
+
 from pydantic import BaseModel, ConfigDict
 from pydantic.alias_generators import to_camel
 
@@ -63,7 +64,7 @@ EMPTY_STATS_RESPONSE = StatisticsResponse(
     location_distribution=[]
 )
 
-class PlantCreateRequest(BaseModel):
+class PlantCreateRequest(BaseModelWithCaseConversion):
     name:               str
     latin_name:         str
     category:           PlantCategory

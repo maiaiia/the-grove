@@ -2,7 +2,9 @@ from collections import Counter
 
 from backend.src.model.plant import Plant
 from backend.src.repository.plant_repository import PlantRepository, plant_repository
-from backend.src.schema import PlantMapper, PlantSummaryResponse, PlantDetailResponse, StatisticsResponse, EMPTY_STATS_RESPONSE
+from backend.src.schema import PlantMapper, PlantSummaryResponse, PlantDetailResponse, StatisticsResponse, \
+    EMPTY_STATS_RESPONSE, PlantCreateRequest
+
 
 class PlantService:
     def __init__(self, repository: PlantRepository):
@@ -91,5 +93,10 @@ class PlantService:
             else:
                 water_counts['Seasonal/Occasional'] += 1
         return water_counts
+
+    def create_plant(self, request: PlantCreateRequest):
+        plant_model = PlantMapper.create_request_to_plant(request)
+        saved_plant = self.__repository.save(plant_model)
+        return PlantMapper.to_detail_response(saved_plant)
 
 plant_service = PlantService(plant_repository)

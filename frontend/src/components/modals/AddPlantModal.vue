@@ -34,7 +34,7 @@ function validate() {
 function submit() {
   if (!validate()) return
   store.addPlant(createPlant({
-    id: Date.now(),
+    id: 0,
     name: form.name,
     latinName: form.latinName,
     category: form.category,

@@ -1,7 +1,7 @@
 from backend.src.model.plant import Plant
 from backend.src.model.plant_photo import PlantPhoto
 from backend.src.schema.plant_schema import PlantPhotoResponse, PlantSummaryResponse, PlantDetailResponse, \
-    StatisticsResponse, ChartItem
+    StatisticsResponse, ChartItem, PlantCreateRequest
 
 
 class PlantMapper:
@@ -65,4 +65,16 @@ class PlantMapper:
             photo_distribution=[ChartItem(label=k, count=v) for k, v in photo_counts.items()],
             watering_distribution=[ChartItem(label=k, count=v) for k, v in water_counts.items()],
             location_distribution=[ChartItem(label=k, count=v) for k, v in location_counts.items()]
+        )
+
+    @staticmethod
+    def create_request_to_plant(request: PlantCreateRequest) -> Plant:
+        return Plant(
+            id=0,
+            name=request.name,
+            latin_name=request.latin_name,
+            category=request.category,
+            location=request.location,
+            date_planted=request.date_planted,
+            watering_schedule=request.watering_schedule,
         )

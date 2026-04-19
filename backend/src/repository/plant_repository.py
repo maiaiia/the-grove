@@ -133,11 +133,12 @@ class PlantRepository:
     def __len__(self):
         return len(self.__plants)
 
-    def save(self, plant: Plant):
+    def save(self, plant: Plant) -> Plant:
         if plant.id == 0:
             plant.id = self.__next_id
             self.__next_id += 1
         self.__plants[plant.id] = plant
+        return self.__plants[plant.id]
 
     def remove_plant(self, plant_id: int) -> bool:
         if plant_id in self.__plants:

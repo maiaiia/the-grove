@@ -69,9 +69,17 @@ export const usePlantStore = defineStore('plants', {
 
         },
 
-        async addPlant(plant) {
-            this.plants.push(plant)
-            // TODO: await plantApi.createPlant(plant)
+        async addPlant(newPlantData) {
+            try {
+                const response = await plantApi.addPlant(newPlantData);
+                this.plants.push({
+                    ...response,
+                    image: response.image ? `http://localhost:8000/${response.image.url}` : '/placeholder-plant.png'
+                });
+                await this.fetchPlantStatistics() //i don't really like this but i want stats to automatically refresh
+            } catch (error) {
+                console.error("Failed to plant the new friend:", error);
+            }
         },
 
         async updatePlant(updated) {
