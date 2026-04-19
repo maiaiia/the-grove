@@ -1,7 +1,7 @@
 from backend.src.model.plant import Plant
 from backend.src.model.plant_photo import PlantPhoto
 from backend.src.schema.plant_schema import PlantPhotoResponse, PlantSummaryResponse, PlantDetailResponse, \
-    StatisticsResponse, ChartItem, PlantCreateRequest
+    StatisticsResponse, ChartItem, PlantCreateRequest, PlantUpdateRequest, PlantPhotoRequest
 
 
 class PlantMapper:
@@ -12,6 +12,13 @@ class PlantMapper:
             url=PlantMapper.IMAGE_FOLDER_PATH + photo.filename,
             description=photo.description,
             date=photo.date,
+        )
+    @staticmethod
+    def _get_photo_from_request(request: PlantPhotoRequest) -> PlantPhoto:
+        return PlantPhoto(
+            filename=request.url.split('/')[-1],
+            description=request.description,
+            date=request.date,
         )
 
     @staticmethod
@@ -77,4 +84,18 @@ class PlantMapper:
             location=request.location,
             date_planted=request.date_planted,
             watering_schedule=request.watering_schedule,
+        )
+    @staticmethod
+    def update_request_to_plant(request: PlantUpdateRequest) -> Plant:
+        return Plant(
+            id=0,
+            name=request.name,
+            latin_name=request.latin_name,
+            category=request.category,
+            location=request.location,
+            date_planted=request.date_planted,
+            watering_schedule=request.watering_schedule,
+            notes=request.notes,
+            last_watered=request.last_watered,
+            photos=[PlantMapper._get_photo_from_request(photo) for photo in request.photos],
         )

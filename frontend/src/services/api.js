@@ -30,6 +30,12 @@ export const plantApi = {
 
     async deletePlant(id){
         return await api.delete(`/api/plants/${id}`)
+    },
+
+    async updatePlant(updatedData){
+        const {id, ...data} = updatedData
+        const response = await api.put(`/api/plants/${id}`, data);
+        return response.data;
     }
 }
 

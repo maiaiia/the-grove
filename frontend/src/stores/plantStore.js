@@ -91,7 +91,8 @@ export const usePlantStore = defineStore('plants', {
             const index = this.plants.findIndex(p => p.id === updated.id)
             if (index !== -1) {
                 this.plants[index] = updated
-                // TODO: await plantApi.updatePlant(updated.id, updated)
+                await plantApi.updatePlant(updated)
+                await this.fetchPlantById(updated.id)
             }
         },
     },

@@ -13,10 +13,15 @@ class BaseModelWithCaseConversion(BaseModel):
         from_attributes=True
     )
 
-class PlantPhotoResponse(BaseModelWithCaseConversion):
-    url:            str
-    description:    str
-    date:           date
+class PhotoBase(BaseModelWithCaseConversion):
+    url: str
+    description: str
+    date: date
+
+class PlantPhotoRequest(PhotoBase):
+    pass
+class PlantPhotoResponse(PhotoBase):
+    pass
 
 class PlantSummaryResponse(BaseModelWithCaseConversion):
     id:             int
@@ -64,10 +69,17 @@ EMPTY_STATS_RESPONSE = StatisticsResponse(
     location_distribution=[]
 )
 
-class PlantCreateRequest(BaseModelWithCaseConversion):
+class PlantBase(BaseModelWithCaseConversion):
     name:               str
     latin_name:         str
     category:           PlantCategory
     location:           PlantLocation
     date_planted:       date
     watering_schedule:  int
+
+class PlantCreateRequest(PlantBase):
+    pass
+class PlantUpdateRequest(PlantBase):
+    notes:          str
+    last_watered:   date
+    photos:         list[PlantPhotoRequest]

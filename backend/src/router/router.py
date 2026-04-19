@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException
 from starlette import status
 
 from backend.src.schema.plant_schema import PlantSummaryResponse, PlantDetailResponse, StatisticsResponse, \
-    PlantCreateRequest
+    PlantCreateRequest, PlantUpdateRequest
 from backend.src.service.plant_service import plant_service
 
 plant_router = APIRouter(prefix="/api/plants", tags=["plants"])
@@ -30,6 +30,16 @@ def create_plant(request: PlantCreateRequest):
 @plant_router.delete("/{plant_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_plant(plant_id: int):
     plant_service.delete_plant(plant_id)
+
+@plant_router.put(
+    "/{plant_id}",
+    response_model=PlantDetailResponse
+)
+def update_plant(plant_id: int, request: PlantUpdateRequest):
+    updated_plant = plant_service.update_plant(plant_id, request)
+    if not updated_plant:
+        raise HTTPException(status_code=404, detail="Plant not found")
+    return updated_plant
 
 stats_router = APIRouter(prefix="/api/stats", tags=["stats"])
 

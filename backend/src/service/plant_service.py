@@ -4,6 +4,7 @@ from backend.src.model.plant import Plant
 from backend.src.repository.plant_repository import PlantRepository, plant_repository
 from backend.src.schema import PlantMapper, PlantSummaryResponse, PlantDetailResponse, StatisticsResponse, \
     EMPTY_STATS_RESPONSE, PlantCreateRequest
+from backend.src.schema.plant_schema import PlantUpdateRequest
 
 
 class PlantService:
@@ -98,7 +99,24 @@ class PlantService:
         plant_model = PlantMapper.create_request_to_plant(request)
         saved_plant = self.__repository.save(plant_model)
         return PlantMapper.to_detail_response(saved_plant)
+
     def delete_plant(self, plant_id: int):
         self.__repository.delete_plant(plant_id)
+
+    def update_plant(self, plant_id: int, request: PlantUpdateRequest):
+        plant = self.__repository.get_plant(plant_id)
+        if not plant:
+            return None
+
+        plant.name = request.name
+        plant.latin_name = request.latin_name
+        plant.category = request.category
+        plant.location = request.location
+        plant.date_planted = request.date_planted
+        plant.watering_schedule = request.watering_schedule
+        plant.notes = request.notes
+
+        self.__repository.save(plant)
+        return PlantMapper.to_detail_response(plant)
 
 plant_service = PlantService(plant_repository)
