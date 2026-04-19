@@ -55,10 +55,8 @@ const stats = computed(() => store.stats);
       <PlantAgesChart :ageDistribution="stats.ageDistribution" />
       <PlantTypeChart :typeDistribution="stats.typeDistribution"
                       :totalPlants="stats.totalPlants" />
-    <!--
-      <PhotosPerPlantChart :plants="plants" />
-      <WateringFrequency :plants="plants" />
-      -->
+      <PhotosPerPlantChart :photoDistribution="stats.photoDistribution" />
+      <WateringFrequency :wateringDistribution="stats.wateringDistribution" />
     </div>
   </div>
 </template>

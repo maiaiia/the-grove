@@ -2,42 +2,21 @@
 import { computed } from 'vue';
 
 const props = defineProps({
-  plants: {
+  photoDistribution: {
     type: Array,
-    required: true
+    required: true,
+    default: () => []
   }
 });
 
-// Group plants by photo count brackets
-const photoDistribution = computed(() => {
-  const brackets = [
-    { label: '0 photos', min: 0, max: 0 },
-    { label: '1-2 photos', min: 1, max: 2 },
-    { label: '3-5 photos', min: 3, max: 5 },
-    { label: '6-10 photos', min: 6, max: 10 },
-    { label: '10+ photos', min: 11, max: Infinity }
-  ];
-
+const chartData = computed(() => {
+  if (!props.photoDistribution.length) return [];
   const colors = ['#2d3d2b', '#3d5a3a', '#5a7a56', '#8b7355', '#a89b7e'];
-
-  const distribution = brackets.map((bracket, index) => {
-    const plantsInBracket = props.plants.filter(plant => {
-      const photoCount = plant.photos?.length || 0;
-      return photoCount >= bracket.min && (bracket.max === Infinity ? true : photoCount <= bracket.max);
-    });
-
-    return {
-      ...bracket,
-      count: plantsInBracket.length,
-      color: colors[index]
-    };
-  }).filter(d => d.count > 0); // Only show brackets with plants
-
-  const maxCount = Math.max(...distribution.map(d => d.count), 1);
-
-  return distribution.map(d => ({
-    ...d,
-    percentage: (d.count / maxCount) * 100
+  const maxCount = Math.max(...props.photoDistribution.map(d => d.count), 1);
+  return props.photoDistribution.map((item, index) => ({
+    ...item,
+    color: colors[index % colors.length],
+    percentage: (item.count / maxCount) * 100
   }));
 });
 </script>
@@ -48,7 +27,7 @@ const photoDistribution = computed(() => {
     <h3 class="chart-title">Photos per plant</h3>
 
     <div class="photo-bars">
-      <div v-for="bracket in photoDistribution" :key="bracket.label" class="photo-bar-row">
+      <div v-for="bracket in chartData" :key="bracket.label" class="photo-bar-row">
         <span class="photo-label">{{ bracket.label }}</span>
         <div class="bar-container">
           <div

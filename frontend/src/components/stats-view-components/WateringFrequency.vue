@@ -1,43 +1,22 @@
-<!--TODO - can be improved by using brackets-->
 <script setup>
 import { computed } from 'vue';
 
 const props = defineProps({
-  plants: {
+  wateringDistribution: {
     type: Array,
-    required: true
+    required: true,
+    default: () => []
   }
 });
 
 const frequencyData = computed(() => {
-  const schedules = {
-    'Every 2 days': [],
-    'Weekly': [],
-    'Every 2 weeks': []
-  };
-
-  props.plants.forEach(plant => {
-    if (plant.wateringSchedule === 2){
-      schedules['Every 2 days'].push(plant);
-    }
-    else if (plant.wateringSchedule === 7) {
-      schedules['Weekly'].push(plant);
-    }
-    else if (plant.wateringSchedule === 14) {
-      schedules['Every 2 weeks'].push(plant);
-    }
-    else {
-      schedules[plant.wateringSchedule].push(plant);
-    }
-  });
-
-  const maxCount = Math.max(...Object.values(schedules).map(arr => arr.length), 1);
-
-  return Object.entries(schedules).map(([schedule, plants]) => ({
-    schedule,
-    count: plants.length,
-    percentage: (plants.length / maxCount) * 100
-  }));
+  if (!props.wateringDistribution.length) return [];
+  const maxCount = Math.max(...props.wateringDistribution.map(d => d.count), 1);
+  return props.wateringDistribution.map((item)=>({
+    ...item,
+    count:item.length,
+    percentage: (item.count / maxCount) * 100
+  }))
 });
 
 const locationData = computed(() => {
@@ -63,8 +42,8 @@ const locationData = computed(() => {
     <h3 class="chart-title">Watering frequency</h3>
 
     <div class="frequency-section">
-      <div v-for="item in frequencyData" :key="item.schedule" class="frequency-row">
-        <span class="frequency-label">{{ item.schedule }}</span>
+      <div v-for="item in frequencyData" :key="item.label" class="frequency-row">
+        <span class="frequency-label">{{ item.label }}</span>
         <div class="bar-container">
           <div
               class="bar"
@@ -74,7 +53,7 @@ const locationData = computed(() => {
         <span class="frequency-count">{{ item.count }}</span>
       </div>
     </div>
-
+  <!--
     <div class="location-section">
       <p class="section-label">LOCATION SPLIT</p>
       <div v-for="item in locationData" :key="item.location" class="frequency-row">
@@ -88,6 +67,7 @@ const locationData = computed(() => {
         <span class="frequency-count">{{ item.count }}</span>
       </div>
     </div>
+    -->
   </div>
 </template>
 
