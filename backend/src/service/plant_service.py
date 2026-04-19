@@ -82,6 +82,7 @@ class PlantService:
                 water_counts['Seasonal/Occasional'] += 1
 
         type_counts = Counter(p.category for p in all_plants)
+        location_counts = Counter(p.location for p in all_plants)
 
         return StatisticsResponse(
             total_plants=total_plants,
@@ -93,6 +94,7 @@ class PlantService:
             type_distribution=[ChartItem(label=k, count=v) for k, v in type_counts.items()],
             photo_distribution=[ChartItem(label=k, count=v) for k, v in photo_counts.items()],
             watering_distribution=[ChartItem(label=k, count=v) for k, v in water_counts.items()],
+            location_distribution=[ChartItem(label=k, count=v) for k, v in location_counts.items()]
         )
 
 

@@ -7,7 +7,7 @@ import PlantTypeChart from "@/components/stats-view-components/PlantTypeChart.vu
 import {usePlantStore} from "@/stores/plantStore.js";
 import AppNav from "@/components/AppNav.vue";
 import StatsBreadcrumb from "@/components/stats-view-components/StatsBreadcrumb.vue";
-import WateringFrequency from "@/components/stats-view-components/WateringFrequency.vue";
+import CareInsights from "@/components/stats-view-components/CareInsights.vue";
 
 const store = usePlantStore();
 onMounted(()=>store.fetchPlantStatistics());
@@ -56,7 +56,9 @@ const stats = computed(() => store.stats);
       <PlantTypeChart :typeDistribution="stats.typeDistribution"
                       :totalPlants="stats.totalPlants" />
       <PhotosPerPlantChart :photoDistribution="stats.photoDistribution" />
-      <WateringFrequency :wateringDistribution="stats.wateringDistribution" />
+      <CareInsights :wateringDistribution="stats.wateringDistribution"
+                    :locationDistribution="stats.locationDistribution"
+      />
     </div>
   </div>
 </template>

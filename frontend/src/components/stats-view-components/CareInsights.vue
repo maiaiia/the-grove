@@ -6,6 +6,11 @@ const props = defineProps({
     type: Array,
     required: true,
     default: () => []
+  },
+  locationDistribution: {
+    type: Array,
+    required: true,
+    default: () => []
   }
 });
 
@@ -20,28 +25,22 @@ const frequencyData = computed(() => {
 });
 
 const locationData = computed(() => {
-  const locations = {};
-
-  props.plants.forEach(plant => {
-    locations[plant.location] = (locations[plant.location] || 0) + 1;
-  });
-
-  const maxCount = Math.max(...Object.values(locations), 1);
-
-  return Object.entries(locations).map(([location, count]) => ({
-    location,
-    count,
-    percentage: (count / maxCount) * 100
-  }));
+  if (!props.locationDistribution.length) return [];
+  const maxCount = Math.max(...props.locationDistribution.map(d => d.count), 1);
+  return props.locationDistribution.map((item)=>({
+    ...item,
+    count:item.length,
+    percentage: (item.count / maxCount) * 100
+  }))
 });
 </script>
 
 <template>
   <div class="chart-container">
-    <p class="chart-label">CARE INSIGHTS</p>
-    <h3 class="chart-title">Watering frequency</h3>
+    <p class="chart-title">Care Insights</p>
 
     <div class="frequency-section">
+      <p class="section-label">Watering frequency</p>
       <div v-for="item in frequencyData" :key="item.label" class="frequency-row">
         <span class="frequency-label">{{ item.label }}</span>
         <div class="bar-container">
@@ -53,11 +52,10 @@ const locationData = computed(() => {
         <span class="frequency-count">{{ item.count }}</span>
       </div>
     </div>
-  <!--
     <div class="location-section">
-      <p class="section-label">LOCATION SPLIT</p>
-      <div v-for="item in locationData" :key="item.location" class="frequency-row">
-        <span class="frequency-label">{{ item.location }}</span>
+      <p class="section-label">Location Split</p>
+      <div v-for="item in locationData" :key="item.label" class="frequency-row">
+        <span class="frequency-label">{{ item.label }}</span>
         <div class="bar-container">
           <div
               class="bar location-bar"
@@ -67,7 +65,6 @@ const locationData = computed(() => {
         <span class="frequency-count">{{ item.count }}</span>
       </div>
     </div>
-    -->
   </div>
 </template>
 

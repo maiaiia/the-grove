@@ -49,6 +49,7 @@ class StatisticsResponse(BaseModelWithCaseConversion):
     type_distribution:      list[ChartItem]
     photo_distribution:     list[ChartItem]
     watering_distribution:  list[ChartItem]
+    location_distribution:  list[ChartItem]
 
 EMPTY_STATS_RESPONSE = StatisticsResponse(
     total_plants=0,
@@ -58,4 +59,6 @@ EMPTY_STATS_RESPONSE = StatisticsResponse(
     age_distribution=[],
     type_distribution=[],
     photo_distribution=[],
-    watering_distribution=[])
+    watering_distribution=[],
+    location_distribution=[]
+)
