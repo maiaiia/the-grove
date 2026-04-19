@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue';
+import {computed, onMounted} from 'vue';
 import StatsCard from "@/components/stats-view-components/StatsCard.vue";
 import PlantAgesChart from "@/components/stats-view-components/PlantAgesChart.vue";
 import PhotosPerPlantChart from "@/components/stats-view-components/PhotosPerPlantChart.vue";
@@ -10,31 +10,9 @@ import StatsBreadcrumb from "@/components/stats-view-components/StatsBreadcrumb.
 import WateringFrequency from "@/components/stats-view-components/WateringFrequency.vue";
 
 const store = usePlantStore();
-const plants = computed(() => store.plants);
+onMounted(()=>store.fetchPlantStatistics());
+const stats = computed(() => store.stats);
 
-const totalPlants = computed(() => plants.value.length);
-
-const oldestPlant = computed(() => {
-  if (!plants.value.length) return { age: 0 };
-  return plants.value.reduce((oldest, plant) =>
-      plant.age > oldest.age ? plant : oldest
-  );
-});
-
-const totalPhotos = computed(() => {
-  return plants.value.reduce((sum, plant) =>
-      sum + (plant.photos?.length || 0), 0
-  );
-});
-
-const avgPhotosPerPlant = computed(() => {
-  if (!plants.value.length) return 0;
-  return Math.round(totalPhotos.value / plants.value.length);
-});
-
-const uniqueLocations = computed(() => {
-  return new Set(plants.value.map(p => p.location)).size;
-});
 </script>
 
 <template>
@@ -53,32 +31,33 @@ const uniqueLocations = computed(() => {
     <div class="stats-grid">
       <StatsCard
           label="TOTAL PLANTS"
-          :value="totalPlants"
+          :value="stats.totalPlants"
           sublabel="and growing"
       />
       <StatsCard
           label="OLDEST PLANT"
-          :value="oldestPlant.age"
+          :value="stats.oldestPlant"
           sublabel="yrs"
       />
       <StatsCard
           label="UNIQUE LOCATIONS"
-          :value="uniqueLocations"
+          :value="stats.uniqueLocations"
           sublabel="spots"
       />
       <StatsCard
           label="TOTAL PHOTOS TAKEN"
-          :value="plants.reduce((sum, p)=> sum + p.photos.length, 0)"
+          :value="stats.totalPhotos"
           sublabel="photos"
       />
     </div>
 
-
     <div class="charts-grid">
+    <!--
       <PlantAgesChart :plants="plants" />
       <PlantTypeChart :plants="plants" />
       <PhotosPerPlantChart :plants="plants" />
       <WateringFrequency :plants="plants" />
+      -->
     </div>
   </div>
 </template>

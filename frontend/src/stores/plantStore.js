@@ -5,6 +5,7 @@ export const usePlantStore = defineStore('plants', {
     state: () => ({
         plants: [],
         currentPlant: null,
+        stats: [],
         loading: false,
         error: null,
     }),
@@ -53,6 +54,21 @@ export const usePlantStore = defineStore('plants', {
                 this.loading = false;
             }
         },
+
+        async fetchPlantStatistics() {
+            this.loading = true;
+            try{
+                const data = await plantApi.getStats();
+                this.stats = data;
+            } catch (err) {
+                this.error = "Could not load plant statistcs.";
+                console.error(err);
+            } finally {
+                this.loading = false;
+            }
+
+        },
+
         async addPlant(plant) {
             this.plants.push(plant)
             // TODO: await plantApi.createPlant(plant)
@@ -65,7 +81,7 @@ export const usePlantStore = defineStore('plants', {
                 // TODO: await plantApi.updatePlant(updated.id, updated)
             }
         },
-        
+
         async deletePlant(id) {
             this.plants = this.plants.filter(p => p.id !== id)
             // TODO: await plantApi.deletePlant(id)

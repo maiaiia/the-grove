@@ -13,25 +13,49 @@ class BaseModelWithCaseConversion(BaseModel):
     )
 
 class PlantPhotoResponse(BaseModelWithCaseConversion):
-    url: str
-    description: str
-    date: date
+    url:            str
+    description:    str
+    date:           date
 
 class PlantSummaryResponse(BaseModelWithCaseConversion):
-    id: int
-    name: str
-    latin_name: str
-    category: PlantCategory
-    last_watered: date
-    age: int
-    image: PlantPhotoResponse | None
+    id:             int
+    name:           str
+    latin_name:     str
+    category:       PlantCategory
+    last_watered:   date
+    age:            int
+    image:          PlantPhotoResponse | None
     #needs_watering: bool
 
-
 class PlantDetailResponse(PlantSummaryResponse):
-    location: PlantLocation
-    date_planted: date
-    photo_count: int
-    watering_schedule: int
-    notes: str
-    photos: list[PlantPhotoResponse]
+    location:           PlantLocation
+    date_planted:       date
+    photo_count:        int
+    watering_schedule:  int
+    notes:              str
+    photos:             list[PlantPhotoResponse]
+
+class ChartItem(BaseModelWithCaseConversion):
+    label: str
+    count: int
+
+class StatisticsResponse(BaseModelWithCaseConversion):
+    total_plants:       int
+    oldest_plant:       int
+    total_photos:       int
+    unique_locations:   int
+
+    age_distribution:       list[ChartItem]
+    type_distribution:      list[ChartItem]
+    photo_distribution:     list[ChartItem]
+    watering_distribution:  list[ChartItem]
+
+EMPTY_STATS_RESPONSE = StatisticsResponse(
+    total_plants=0,
+    oldest_plant=0,
+    total_photos=0,
+    unique_locations=0,
+    age_distribution=[],
+    type_distribution=[],
+    photo_distribution=[],
+    watering_distribution=[])

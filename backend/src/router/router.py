@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 
-from backend.src.schema.plant_schema import PlantSummaryResponse, PlantDetailResponse
+from backend.src.schema.plant_schema import PlantSummaryResponse, PlantDetailResponse, StatisticsResponse
 from backend.src.service.plant_service import plant_service
 
 plant_router = APIRouter(prefix="/api/plants", tags=["plants"])
@@ -15,3 +15,10 @@ def get_plant_detail(plant_id: int):
     if not plant:
         raise HTTPException(status_code=404, detail="Plant not found")
     return plant
+
+stats_router = APIRouter(prefix="/api/stats", tags=["stats"])
+
+@stats_router.get("/", response_model=StatisticsResponse)
+def get_statistics():
+    stats_data = plant_service.get_statistics()
+    return stats_data

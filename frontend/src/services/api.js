@@ -18,6 +18,10 @@ export const plantApi = {
         return response.data
     },
 
+    async getStats() {
+        const response = await api.get('/api/stats')
+        return response.data
+    }
 }
 
 export default api

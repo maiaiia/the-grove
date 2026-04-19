@@ -1,7 +1,10 @@
+from collections import Counter
+
 from backend.src.model.plant import Plant
 from backend.src.model.plant_photo import PlantPhoto
 from backend.src.repository.plant_repository import PlantRepository, plant_repository
-from backend.src.schema.plant_schema import PlantSummaryResponse, PlantPhotoResponse, PlantDetailResponse
+from backend.src.schema.plant_schema import PlantSummaryResponse, PlantPhotoResponse, PlantDetailResponse, \
+    StatisticsResponse, EMPTY_STATS_RESPONSE, ChartItem
 
 
 class PlantService:
@@ -16,6 +19,75 @@ class PlantService:
 
     def get_plant(self, plant_id: int) -> PlantDetailResponse:
         return PlantService._to_detail_response(self.__repository.get_plant(plant_id))
+
+    def get_statistics(self) -> StatisticsResponse:
+        total_plants = len(self.__repository)
+        if total_plants == 0:
+            return EMPTY_STATS_RESPONSE
+
+        all_plants = self.__repository.plants
+        oldest_plant = max(p.age for p in all_plants)
+        total_photos = sum(len(p.photos) for p in all_plants if p.photos)
+        unique_locations = len({p.location for p in all_plants if p.location})
+
+        age_counts = Counter()
+        for p in all_plants:
+            age = p.age
+            if age < 1:
+                age_counts['<1y'] += 1
+            elif age <= 2:
+                age_counts['1-2y'] += 1
+            elif age <= 5:
+                age_counts['2-5y'] += 1
+            elif age <= 10:
+                age_counts['5-10y'] += 1
+            elif age <= 25:
+                age_counts['10-25y'] += 1
+            else:
+                age_counts['25y+'] += 1
+
+        photo_counts = Counter()
+        for p in all_plants:
+            count = len(p.photos) if p.photos else 0
+            if count == 0:
+                photo_counts['0 photos'] += 1
+            elif 1 <= count <= 2:
+                photo_counts['1-2 photos'] += 1
+            elif 3 <= count <= 5:
+                photo_counts['3-5 photos'] += 1
+            elif 6 <= count <= 10:
+                photo_counts['6-10 photos'] += 1
+            else:
+                photo_counts['10+ photos'] += 1
+
+        water_counts = Counter()
+        for p in all_plants:
+            days = p.watering_schedule
+            if days <= 2:
+                water_counts['High (Every 1-2 days)'] += 1
+            elif days <= 7:
+                water_counts['Weekly'] += 1
+            elif days <= 14:
+                water_counts['Bi-Weekly'] += 1
+            elif days <= 30:
+                water_counts['Monthly'] += 1
+            else:
+                water_counts['Seasonal/Occasional'] += 1
+
+        type_counts = Counter(p.category for p in all_plants)
+
+        return StatisticsResponse(
+            total_plants=total_plants,
+            oldest_plant=oldest_plant,
+            total_photos=total_photos,
+            unique_locations=unique_locations,
+
+            age_distribution=[ChartItem(label=k, count=v) for k, v in age_counts.items()],
+            type_distribution=[ChartItem(label=k, count=v) for k, v in type_counts.items()],
+            photo_distribution=[ChartItem(label=k, count=v) for k, v in photo_counts.items()],
+            watering_distribution=[ChartItem(label=k, count=v) for k, v in water_counts.items()],
+        )
+
 
     @staticmethod
     def _get_photo_response(photo: PlantPhoto) -> PlantPhotoResponse:

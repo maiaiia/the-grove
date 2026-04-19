@@ -130,6 +130,9 @@ class PlantRepository:
     def plants(self):
         return list(self.__plants.values())
 
+    def __len__(self):
+        return len(self.__plants)
+
     def save(self, plant: Plant):
         if plant.id == 0:
             plant.id = self.__next_id
