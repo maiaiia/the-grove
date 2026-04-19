@@ -28,6 +28,9 @@ export const plantApi = {
         return response.data
     },
 
+    async deletePlant(id){
+        return await api.delete(`/api/plants/${id}`)
+    }
 }
 
 export default api

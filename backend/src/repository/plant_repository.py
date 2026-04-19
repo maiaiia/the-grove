@@ -140,7 +140,7 @@ class PlantRepository:
         self.__plants[plant.id] = plant
         return self.__plants[plant.id]
 
-    def remove_plant(self, plant_id: int) -> bool:
+    def delete_plant(self, plant_id: int) -> bool:
         if plant_id in self.__plants:
             del self.__plants[plant_id]
             return True

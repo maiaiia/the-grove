@@ -98,5 +98,7 @@ class PlantService:
         plant_model = PlantMapper.create_request_to_plant(request)
         saved_plant = self.__repository.save(plant_model)
         return PlantMapper.to_detail_response(saved_plant)
+    def delete_plant(self, plant_id: int):
+        self.__repository.delete_plant(plant_id)
 
 plant_service = PlantService(plant_repository)

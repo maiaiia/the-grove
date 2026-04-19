@@ -82,17 +82,17 @@ export const usePlantStore = defineStore('plants', {
             }
         },
 
+        async deletePlant(id) {
+            this.plants = this.plants.filter(p => p.id !== id)
+            await plantApi.deletePlant(id)
+        },
+
         async updatePlant(updated) {
             const index = this.plants.findIndex(p => p.id === updated.id)
             if (index !== -1) {
                 this.plants[index] = updated
                 // TODO: await plantApi.updatePlant(updated.id, updated)
             }
-        },
-
-        async deletePlant(id) {
-            this.plants = this.plants.filter(p => p.id !== id)
-            // TODO: await plantApi.deletePlant(id)
         },
     },
 })

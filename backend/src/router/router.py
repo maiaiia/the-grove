@@ -27,6 +27,10 @@ def create_plant(request: PlantCreateRequest):
     new_plant = plant_service.create_plant(request)
     return new_plant
 
+@plant_router.delete("/{plant_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_plant(plant_id: int):
+    plant_service.delete_plant(plant_id)
+
 stats_router = APIRouter(prefix="/api/stats", tags=["stats"])
 
 @stats_router.get("/", response_model=StatisticsResponse)
