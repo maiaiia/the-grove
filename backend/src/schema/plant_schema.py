@@ -62,3 +62,11 @@ EMPTY_STATS_RESPONSE = StatisticsResponse(
     watering_distribution=[],
     location_distribution=[]
 )
+
+class PlantCreateRequest(BaseModel):
+    name:               str
+    latin_name:         str
+    category:           PlantCategory
+    location:           PlantLocation
+    date_planted:       date
+    watering_schedule:  int
