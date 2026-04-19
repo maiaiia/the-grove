@@ -2,38 +2,40 @@
 import { computed } from 'vue';
 
 const props = defineProps({
-  plants: {
+  typeDistribution: {
     type: Array,
-    required: true
+    required: true,
+    default: () => []
+  },
+  totalPlants: {
+    type: Number,
+    required: true,
+    default: 1
   }
 });
 
-const categoryColors = {
-  'Bonsai': 'var(--green-kelp)',
-  'Tropical': 'var(--avocado)',
-  'Flowering': 'var(--marigold)',
-  'Succulent': 'var(--clay)',
-};
+const palette = [
+  'var(--avocado)',
+  'var(--green-kelp)',
+  'var(--marigold)',
+  'var(--clay)',
+  'var(--rodeo-dust)',
+]
 
-const typeDistribution = computed(() => {
-  const counts = {};
-  props.plants.forEach(plant => {
-    counts[plant.category] = (counts[plant.category] || 0) + 1;
-  });
-
-  return Object.entries(counts).map(([type, count]) => ({
-    type,
-    count,
-    color: categoryColors[type] || 'var(--mongoose)'
+const displayData = computed(() => {
+  return props.typeDistribution.map((item, index) => ({
+    type: item.label,
+    count: item.count,
+    color: palette[index % palette.length]
   }));
 });
 
 const segments = computed(() => {
   let cumulative = 0;
 
-  return typeDistribution.value.map(item => {
-    const percentage = item.count / totalPlants.value;
-    const dash = percentage * 251.2; // circumference (2πr, r=40 → ~251.2)
+  return displayData.value.map(item => {
+    const percentage = item.count / props.totalPlants;
+    const dash = percentage * 251.2;
 
     const segment = {
       ...item,
@@ -46,7 +48,6 @@ const segments = computed(() => {
   });
 });
 
-const totalPlants = computed(() => props.plants.length);
 </script>
 
 <template>
@@ -73,12 +74,12 @@ const totalPlants = computed(() => props.plants.length);
           />
         </svg>
         <div class="donut-center">
-          <span class="center-number">{{ totalPlants }}</span>
+          <span class="center-number">{{ props.totalPlants }}</span>
         </div>
       </div>
 
       <div class="legend">
-        <div v-for="item in typeDistribution" :key="item.type" class="legend-item">
+        <div v-for="item in displayData" :key="item.type" class="legend-item">
           <div class="legend-dot" :style="{ backgroundColor: item.color }"></div>
           <span class="legend-label">{{ item.type }}</span>
           <span class="legend-count">{{ item.count }}</span>
