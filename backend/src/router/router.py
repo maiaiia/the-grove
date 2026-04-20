@@ -5,6 +5,12 @@ from backend.src.schema.plant_schema import PlantSummaryResponse, PlantDetailRes
     PlantCreateRequest, PlantUpdateRequest
 from backend.src.service.plant_service import plant_service
 
+app_router = APIRouter(prefix="/api")
+@app_router.get("/health", status_code=200)
+@app_router.head("/health", status_code=200)
+def health_check():
+    return {"status": "online"}
+
 plant_router = APIRouter(prefix="/api/plants", tags=["plants"])
 
 @plant_router.get("/", response_model = list[PlantSummaryResponse])

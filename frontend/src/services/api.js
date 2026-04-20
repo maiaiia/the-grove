@@ -6,7 +6,16 @@ const api = axios.create({
         'Content-Type': 'application/json'
     }
 })
+export const checkNetworkStatus = async () => {
+    if (!navigator.onLine) return false;
 
+    try {
+        await api.head('/api/health', { timeout: 3000 });
+        return true;
+    } catch {
+        return false;
+    }
+}
 export const plantApi = {
     async getAllPlants() {
         const response = await api.get('/api/plants/')
