@@ -40,7 +40,7 @@ class SimulationService:
                     id=0,
                     name=fake.first_name() + ' ' + random.choice(['Fern', 'Magnolia', 'Oak', 'Maple', 'Bloom', 'Vine']),
                     latin_name=fake.last_name().lower() + "us " + fake.last_name().lower() + "is",
-                    category=random.choice(list(PlantCategory)),
+                    category=random.choice([t for t in list(PlantCategory) if t != PlantCategory.ALL ]),
                     location=random.choice(list(PlantLocation)),
                     date_planted = date_planted,
                     watering_schedule=random.randint(1,14),

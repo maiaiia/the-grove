@@ -5,6 +5,7 @@ from backend.src.repository.plant_repository import PlantRepository, plant_repos
 from backend.src.schema import PlantMapper, PlantSummaryResponse, PlantDetailResponse, StatisticsResponse, \
     EMPTY_STATS_RESPONSE, PlantCreateRequest
 from backend.src.schema.plant_schema import PlantUpdateRequest
+from backend.src.service.plant_validator import PlantValidator
 
 
 class PlantService:
@@ -96,6 +97,15 @@ class PlantService:
         return water_counts
 
     def create_plant(self, request: PlantCreateRequest):
+
+        PlantValidator.validate_plant_create(
+            name=request.name,
+            latin_name=request.latin_name,
+            category=request.category,
+            location=request.location,
+            date_planted=request.date_planted,
+            watering_schedule=request.watering_schedule
+        )
         plant_model = PlantMapper.create_request_to_plant(request)
         saved_plant = self.__repository.save(plant_model)
         return PlantMapper.to_detail_response(saved_plant)
@@ -107,6 +117,19 @@ class PlantService:
         plant = self.__repository.get_plant(plant_id)
         if not plant:
             return None
+
+
+        PlantValidator.validate_plant_update(
+            name=request.name,
+            latin_name=request.latin_name,
+            category=request.category,
+            location=request.location,
+            date_planted=request.date_planted,
+            watering_schedule=request.watering_schedule,
+            last_watered=request.last_watered,
+            notes=request.notes,
+            photos=request.photos
+        )
 
         plant.name = request.name
         plant.latin_name = request.latin_name

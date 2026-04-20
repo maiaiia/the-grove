@@ -1,5 +1,5 @@
 <script setup>
-import { reactive } from 'vue'
+import {reactive, ref} from 'vue'
 import { useAddPlantModal } from '@/composables/useAddPlantModal.js'
 import { usePlantStore } from '@/stores/plantStore.js'
 import { createPlant } from '@/data/plants.js'
@@ -30,23 +30,27 @@ function validate() {
   if (!form.location) errors.location = 'Required'
   return Object.keys(errors).length === 0
 }
-
-function submit() {
+const serverError = ref(null)
+async function submit() {
   if (!validate()) return
-  store.addPlant(createPlant({
-    id: 0,
-    name: form.name,
-    latinName: form.latinName,
-    category: form.category,
-    datePlanted: form.datePlanted,
-    wateringSchedule: Number(form.wateringSchedule),
-    location: form.location,
-    lastWatered: form.datePlanted,
-    photos: [],
-    notes: '',
-  }))
-  Object.assign(form, empty())
-  close()
+  try {
+    await store.addPlant(createPlant({
+      id: 0,
+      name: form.name,
+      latinName: form.latinName,
+      category: form.category,
+      datePlanted: form.datePlanted,
+      wateringSchedule: Number(form.wateringSchedule),
+      location: form.location,
+      lastWatered: form.datePlanted,
+      photos: [],
+      notes: '',
+    }))
+    Object.assign(form, empty())
+    close()
+  } catch (error) {
+    serverError.value = error.response?.data?.message || "The Grove is currently unreachable."
+  }
 }
 
 function handleBackdrop(e) {
@@ -60,6 +64,11 @@ function handleBackdrop(e) {
       <div v-if="isOpen" class="modal-backdrop" @click="handleBackdrop">
         <div class="modal">
 
+          <Transition name="fade">
+            <div v-if="serverError" class="modal__alert">
+              <p>{{ serverError }}</p>
+            </div>
+          </Transition>
           <div class="modal__header">
             <div>
               <p class="modal__eyebrow">Add to your collection</p>
@@ -282,4 +291,22 @@ function handleBackdrop(e) {
 .modal-enter-active .modal, .modal-leave-active .modal { transition: transform 0.2s ease; }
 .modal-enter-from, .modal-leave-to { opacity: 0; }
 .modal-enter-from .modal, .modal-leave-to .modal { transform: translateY(12px); }
+
+.modal__alert {
+  border-left: 3px solid #c0392b;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+  border-radius: 4px;
+}
+
+.modal__alert p {
+  font-family: var(--space-mono), monospace;
+  font-size: 11px;
+  color: #c0392b;
+  margin: 0;
+}
+
 </style>

@@ -121,14 +121,10 @@ export const usePlantStore = defineStore('plants', {
                 this.saveToDisk();
                 await this.fetchPlantStatistics();
 
-                if (this.hasPendingChanges) {
-                    await this.syncWithServer();
-                }
-
                 return newPlant;
             } catch (error) {
                 console.error("Failed to add plant:", error);
-                return this.handleOfflineAdd(newPlantData);
+                throw error;
             }
         },
         handleOfflineAdd(plantData) {
