@@ -1,10 +1,16 @@
 <script setup>
 import router from "@/router/index.js";
+import {useDeletePlantModal} from "@/composables/useDeletePlantModal.js";
 
 defineProps({ plants: Array })
 const emit = defineEmits(['select'])
 
+const { open: openDeleteModal } = useDeletePlantModal()
+
 const goToPlant = (plant) => router.push(`/plant/${plant.id}`)
+const handleDelete = (plant) => {
+  openDeleteModal(plant)
+}
 </script>
 
 <template>
@@ -16,6 +22,7 @@ const goToPlant = (plant) => router.push(`/plant/${plant.id}`)
         <th>CATEGORY</th>
         <th>AGE</th>
         <th>LAST WATERED</th>
+        <th>ACTIONS</th>
       </tr>
       </thead>
       <TransitionGroup name="table-row" tag="tbody" appear>
@@ -43,6 +50,14 @@ const goToPlant = (plant) => router.push(`/plant/${plant.id}`)
             </div>
           </td>
           <td class="mongoose">{{ plant.lastWatered }}</td>
+          <td class="cell-actions">
+            <button
+                class="delete-btn"
+                @click.stop="handleDelete(plant)"
+            >
+              ✕
+            </button>
+          </td>
         </tr>
       </TransitionGroup>
     </table>
@@ -105,6 +120,26 @@ td { padding: 12px 16px; font-family: var(--space-mono), monospace; font-size: 1
 }
 .bar-fill { height: 6px; background: var(--avocado); border-radius: 3px;}
 .age-label { font-size: 10px; color: var(--avocado); }
+
+.cell-actions {
+  text-align: center;
+  padding-right: 24px;
+}
+
+.delete-btn {
+  background: none;
+  border: none;
+  color: var(--mongoose);
+  font-size: 16px;
+  cursor: pointer;
+  padding: 8px;
+  transition: all 0.2s ease;
+}
+
+.delete-btn:hover {
+  color: var(--burnt-umber);
+  transform: scale(1.2);
+}
 
 /* Table row staggered transitions */
 .table-row-enter-active {
