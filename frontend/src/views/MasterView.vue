@@ -15,7 +15,7 @@ const viewMode = ref(savedView || 'visual')
 const previousPageNumber = getCookie('previousPageNumber')
 const currentPage = ref( previousPageNumber || 1)
 
-const perPage = computed(() => viewMode.value === 'visual' ? 5 : 10)
+const perPage = computed(() => viewMode.value === 'visual' ? 5 : 8)
 const totalPages = computed(() => Math.ceil(store.plants.length / perPage.value))
 
 watch(viewMode, (newVal) => {
