@@ -175,10 +175,15 @@ export const usePlantStore = defineStore('plants', {
 
         async updatePlant(updated) {
             const index = this.plants.findIndex(p => p.id === updated.id)
-            if (index !== -1) {
+            if (index === -1) return;
+            try {
                 this.plants[index] = updated
                 await plantApi.updatePlant(updated)
                 await this.fetchPlantById(updated.id)
+            } catch (e) {
+                this.error = "Could not update plant details.";
+                console.error(e);
+                throw e;
             }
         },
 

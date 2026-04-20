@@ -47,6 +47,7 @@ async function submit() {
       notes: '',
     }))
     Object.assign(form, empty())
+    serverError.value=null;
     close()
   } catch (error) {
     serverError.value = error.response?.data?.message || "The Grove is currently unreachable."

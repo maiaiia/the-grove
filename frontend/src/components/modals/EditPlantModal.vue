@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, watch } from 'vue'
+import {reactive, ref, watch} from 'vue'
 import { useEditPlantModal } from '@/composables/useEditPlantModal.js'
 import { usePlantStore } from '@/stores/plantStore.js'
 import { createPlant } from '@/data/plants.js'
@@ -42,19 +42,25 @@ function validate() {
   return Object.keys(errors).length === 0
 }
 
-function submit() {
+const serverError = ref(null)
+async function submit() {
   if (!validate()) return
-  store.updatePlant(createPlant({
-    ...plantToEdit.value,
-    name: form.name,
-    latinName: form.latinName,
-    category: form.category,
-    datePlanted: form.datePlanted,
-    wateringSchedule: Number(form.wateringSchedule),
-    location: form.location,
-    notes: form.notes,
-  }))
-  close()
+  try {
+    await store.updatePlant(createPlant({
+      ...plantToEdit.value,
+      name: form.name,
+      latinName: form.latinName,
+      category: form.category,
+      datePlanted: form.datePlanted,
+      wateringSchedule: Number(form.wateringSchedule),
+      location: form.location,
+      notes: form.notes,
+    }))
+    serverError.value=null;
+    close()
+  } catch (e) {
+    serverError.value = e.response?.data?.message || "The Grove is currently unreachable."
+  }
 }
 
 function handleBackdrop(e) {
@@ -67,6 +73,12 @@ function handleBackdrop(e) {
     <Transition name="modal">
       <div v-if="isOpen" class="modal-backdrop" @click="handleBackdrop">
         <div class="modal">
+
+          <Transition name="fade">
+            <div v-if="serverError" class="modal__alert">
+              <p>{{ serverError }}</p>
+            </div>
+          </Transition>
 
           <div class="modal__header">
             <div>
@@ -268,4 +280,21 @@ function handleBackdrop(e) {
 .modal-enter-active .modal, .modal-leave-active .modal { transition: transform 0.2s ease; }
 .modal-enter-from, .modal-leave-to { opacity: 0; }
 .modal-enter-from .modal, .modal-leave-to .modal { transform: translateY(12px); }
+
+.modal__alert {
+  border-left: 3px solid #c0392b;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+  border-radius: 4px;
+}
+
+.modal__alert p {
+  font-family: var(--space-mono), monospace;
+  font-size: 11px;
+  color: #c0392b;
+  margin: 0;
+}
 </style>
