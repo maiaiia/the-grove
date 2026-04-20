@@ -26,7 +26,10 @@ const goToPlant = (plant) => router.push(`/plant/${plant.id}`)
             :style="{ '--row-index': index }"
         >
           <td class="cell-plant">
-            <img :src="plant.image" class="mini-thumb" />
+            <img v-if="plant.image" :src="plant.image" :alt="plant.name" class="mini-thumb" />
+            <div v-else class="mini-thumb">
+              <img src="/grovelogo.svg" alt="grove logo" class="plant-card__placeholder-logo" />
+            </div>
             <div>
               <p class="name">{{ plant.name }}</p>
               <p class="latin">{{ plant.latinName }}</p>
@@ -69,7 +72,11 @@ tr {
 }
 tr:hover { background: #f9f7f2; }
 td { padding: 12px 16px; font-family: var(--space-mono), monospace; font-size: 13px; color: var(--green-kelp); }
-.mini-thumb { width: 45px; height: 45px; object-fit: cover; border-radius: 2px; margin-right: 12px; }
+
+.mini-thumb, .plant-card__placeholder-logo { width: 45px; height: 45px; object-fit: cover; border-radius: 2px; margin-right: 12px; }
+.plant-card__placeholder-logo {
+  opacity: 0.7;
+}
 .cell-plant { display: flex; align-items: center; }
 .name {
   font-weight: 800;

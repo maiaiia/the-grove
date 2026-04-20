@@ -24,7 +24,7 @@ export const usePlantStore = defineStore('plants', {
                 const rawPlants = await plantApi.getAllPlants()
                 this.plants = rawPlants.map(p => ({
                     ...p,
-                    image: p.image ? `http://localhost:8000/${p.image.url}` : '/placeholder-plant.png'
+                    image: p.image ? `http://localhost:8000/${p.image.url}` : ''
                 }))
             } catch (err) {
                 this.error = err.message
@@ -45,7 +45,7 @@ export const usePlantStore = defineStore('plants', {
                     })) || [],
                     image: data.image?.url
                         ? `http://localhost:8000/${data.image.url}`
-                        : '/placeholder-plant.png'
+                        : ''
                 };
             } catch (err) {
                 this.error = "Could not load plant details.";
@@ -74,7 +74,7 @@ export const usePlantStore = defineStore('plants', {
                 const response = await plantApi.addPlant(newPlantData);
                 this.plants.push({
                     ...response,
-                    image: response.image ? `http://localhost:8000/${response.image.url}` : '/placeholder-plant.png'
+                    image: response.image ? `http://localhost:8000/${response.image.url}` : ''
                 });
                 await this.fetchPlantStatistics() //i don't really like this but i want stats to automatically refresh
             } catch (error) {
