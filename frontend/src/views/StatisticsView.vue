@@ -8,10 +8,16 @@ import {usePlantStore} from "@/stores/plantStore.js";
 import AppNav from "@/components/AppNav.vue";
 import StatsBreadcrumb from "@/components/stats-view-components/StatsBreadcrumb.vue";
 import CareInsights from "@/components/stats-view-components/CareInsights.vue";
+import {useSimulation} from "@/composables/useSimulation.js";
 
 const store = usePlantStore();
 onMounted(()=>store.fetchPlantStatistics());
 const stats = computed(() => store.stats);
+
+const { running, start, stop } = useSimulation(() => {
+  store.fetchPlantStatistics();
+  store.fetchPlants();
+});
 
 </script>
 
@@ -19,6 +25,9 @@ const stats = computed(() => store.stats);
 
   <AppNav />
   <StatsBreadcrumb />
+  <button class="sim-btn" @click="running ? stop() : start()">
+    {{ running ? '⏹ Stop simulation' : '▶ Start simulation' }}
+  </button>
   <div class="statistics-page">
 
     <div class="page-header">
@@ -129,6 +138,25 @@ const stats = computed(() => store.stats);
 .charts-grid :deep(> div) {
   max-width: 100%;
   overflow: hidden;
+}
+
+.sim-btn {
+  display: flex;
+  align-items: center;
+
+  margin-bottom: 24px;
+  padding: 8px 20px;
+  background-color: var(--green-kelp);
+  color: var(--parchment);
+  border: none;
+  border-radius: 4px;
+  font-family: var(--space-mono), monospace;
+  font-size: 12px;
+  letter-spacing: 1px;
+  cursor: pointer;
+}
+.sim-btn:hover {
+  opacity: 0.85;
 }
 
 @media (max-width: 1200px) {

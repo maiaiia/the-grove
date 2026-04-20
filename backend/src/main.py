@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from backend.src.router import plant_router, app_router, stats_router
+from backend.src.router import plant_router, app_router, stats_router, simulation_router
 
 app = FastAPI(title = "The Grove API")
 from fastapi.staticfiles import StaticFiles
@@ -18,6 +18,7 @@ app.add_middleware(
 app.include_router(plant_router)
 app.include_router(stats_router)
 app.include_router(app_router)
+app.include_router(simulation_router)
 
 @app.get("/")
 def root():
