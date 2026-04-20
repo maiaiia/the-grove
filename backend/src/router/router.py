@@ -19,7 +19,7 @@ def get_plant_detail(plant_id: int):
     return plant
 
 @plant_router.post(
-    "/add",
+    "/",
     response_model=PlantDetailResponse,
     status_code=status.HTTP_201_CREATED
 )

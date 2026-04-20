@@ -24,7 +24,7 @@ export const plantApi = {
     },
 
     async addPlant(plantData){
-        const response = await api.post('/api/plants/add', plantData)
+        const response = await api.post('/api/plants/', plantData)
         return response.data
     },
 
