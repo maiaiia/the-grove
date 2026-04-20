@@ -1,15 +1,9 @@
 from fastapi import APIRouter, HTTPException
 from starlette import status
 
-from backend.src.schema.plant_schema import PlantSummaryResponse, PlantDetailResponse, StatisticsResponse, \
+from backend.src.schema.plant_schema import PlantSummaryResponse, PlantDetailResponse, \
     PlantCreateRequest, PlantUpdateRequest
 from backend.src.service.plant_service import plant_service
-
-app_router = APIRouter(prefix="/api")
-@app_router.get("/health", status_code=200)
-@app_router.head("/health", status_code=200)
-def health_check():
-    return {"status": "online"}
 
 plant_router = APIRouter(prefix="/api/plants", tags=["plants"])
 
@@ -46,10 +40,3 @@ def update_plant(plant_id: int, request: PlantUpdateRequest):
     if not updated_plant:
         raise HTTPException(status_code=404, detail="Plant not found")
     return updated_plant
-
-stats_router = APIRouter(prefix="/api/stats", tags=["stats"])
-
-@stats_router.get("/", response_model=StatisticsResponse)
-def get_statistics():
-    stats_data = plant_service.get_statistics()
-    return stats_data
