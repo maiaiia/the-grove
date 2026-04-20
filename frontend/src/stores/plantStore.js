@@ -5,6 +5,7 @@ let PLANT_STORAGE       = 'grove_plants'
 let SYNC_QUEUE_STORAGE  = 'grove_sync_queue'
 
 let DELETE_OPERATION = 'DELETE'
+let CREATE_OPERATION = 'CREATE'
 
 export const usePlantStore = defineStore('plants', {
     state: () => ({
@@ -105,16 +106,46 @@ export const usePlantStore = defineStore('plants', {
         },
 
         async addPlant(newPlantData) {
+            const isOnline = await checkNetworkStatus();
+            if (!isOnline) {
+                return this.handleOfflineAdd(newPlantData);
+            }
+
             try {
                 const response = await plantApi.addPlant(newPlantData);
-                this.plants.push({
+                const newPlant = {
                     ...response,
                     image: response.image ? `http://localhost:8000/${response.image.url}` : ''
-                });
-                await this.fetchPlantStatistics() //i don't really like this but i want stats to automatically refresh
+                };
+                this.plants.push(newPlant);
+                this.saveToDisk();
+                await this.fetchPlantStatistics();
+
+                if (this.hasPendingChanges) {
+                    await this.syncWithServer();
+                }
+
+                return newPlant;
             } catch (error) {
-                console.error("Failed to plant the new friend:", error);
+                console.error("Failed to add plant:", error);
+                return this.handleOfflineAdd(newPlantData);
             }
+        },
+        handleOfflineAdd(plantData) {
+            const tempId = this.generateTempId();
+            const tempPlant = {
+                ...plantData,
+                id: tempId,
+            };
+
+            this.plants.push(tempPlant);
+            this.queueOperation({
+                type: CREATE_OPERATION,
+                data: plantData,
+                tempId: tempId
+            })
+            console.log('Plant queued for sync:', tempPlant);
+            return tempPlant;
         },
 
         async deletePlant(id) {
@@ -124,16 +155,25 @@ export const usePlantStore = defineStore('plants', {
             const isOnline = await checkNetworkStatus();
 
             if (isOnline) {
+                if (id.startsWith('temp')) return;
                 try {
                     await plantApi.deletePlant(id)
                 } catch (err) {
                     console.log("Failed to delete plant: ", err.message)
                 }
             } else {
-                this.queueOperation({
-                    type: DELETE_OPERATION,
-                    plant_id: id
-                })
+                if (id.startsWith('temp_')) {
+                    this.syncQueue = this.syncQueue.filter(
+                        op => !(op.type === CREATE_OPERATION && op.tempId === id)
+                    );
+                    this.saveToDisk();
+                }
+                else {
+                    this.queueOperation({
+                        type: DELETE_OPERATION,
+                        plantId: id
+                    })
+                }
             }
         },
 
@@ -167,8 +207,20 @@ export const usePlantStore = defineStore('plants', {
         },
         async processSyncOperation(operation) {
             switch (operation.type) {
+                case CREATE_OPERATION: {
+                    const response = await plantApi.addPlant(operation.data);
+                    const index = this.plants.findIndex(p => p.id === operation.tempId)
+                    if (index !== -1) {
+                        this.plants[index] = {
+                            ...response,
+                            image: response.image ? `http://localhost:8000/${response.image.url}` : '',
+                        };
+                        this.saveToDisk();
+                    }
+                    break;
+                }
                 case DELETE_OPERATION: {
-                    return await plantApi.deletePlant(operation.plant_id);
+                    return await plantApi.deletePlant(operation.plantId);
                 }
                 default:
                     console.warn("Unknown operation type:", operation.type);
@@ -178,7 +230,6 @@ export const usePlantStore = defineStore('plants', {
 
         init() {
             this.loadFromStorage();
-
             /*
             setInterval(async () => {
                 if (this.syncQueue.length > 0) {
