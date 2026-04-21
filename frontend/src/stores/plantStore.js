@@ -151,14 +151,14 @@ export const usePlantStore = defineStore('plants', {
             const isOnline = await checkNetworkStatus();
 
             if (isOnline) {
-                if (id.startsWith('temp')) return;
+                if (String(id).startsWith('temp')) return;
                 try {
                     await plantApi.deletePlant(id)
                 } catch (err) {
                     console.log("Failed to delete plant: ", err.message)
                 }
             } else {
-                if (id.startsWith('temp_')) {
+                if (String(id).startsWith('temp_')) {
                     this.syncQueue = this.syncQueue.filter(
                         op => !(op.type === CREATE_OPERATION && op.tempId === id)
                     );
