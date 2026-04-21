@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from starlette import status
@@ -9,7 +11,11 @@ from backend.src.service.plant_validator import PlantValidationError
 app = FastAPI(title = "The Grove API")
 from fastapi.staticfiles import StaticFiles
 
-app.mount("/backend/src/images", StaticFiles(directory="backend/src/images"), name="images")
+BASE_DIR = Path(__file__).resolve().parent
+IMAGES_DIR = BASE_DIR / "images"
+
+if IMAGES_DIR.exists():
+    app.mount("/backend/src/images", StaticFiles(directory=str(IMAGES_DIR)), name="images")
 
 app.add_middleware(
     CORSMiddleware,
