@@ -15,6 +15,9 @@ export const usePlantStore = defineStore('plants', {
         loading: false,
         error: null,
 
+        lastFetched: 0,
+        totalPlants: 0,
+
         syncQueue: [],
     }),
 
@@ -47,28 +50,6 @@ export const usePlantStore = defineStore('plants', {
             this.saveToDisk();
             console.log(`Added operation ${operation.type} to sync queue`)
         },
-
-        async fetchPlants() {
-            if (!await checkNetworkStatus()) return;
-            await this.syncWithServer();
-
-            this.loading = true
-            try {
-                const rawPlants = await plantApi.getAllPlants()
-                const mappedPlants = rawPlants.map(p => ({
-                    ...p,
-                    image: p.image ? `http://localhost:8000/${p.image.url}` : ''
-                }))
-
-                this.plants = mappedPlants;
-                this.saveToDisk();
-            } catch (err) {
-                this.error = err.message
-            } finally {
-                this.loading = false
-            }
-        },
-
         async fetchPlantById(id) {
             this.loading = true;
             try {
@@ -90,7 +71,6 @@ export const usePlantStore = defineStore('plants', {
                 this.loading = false;
             }
         },
-
         async fetchPlantStatistics() {
             this.loading = true;
             try{
@@ -105,6 +85,33 @@ export const usePlantStore = defineStore('plants', {
 
         },
 
+        async fetchPage(pageNumber, plantsPerPage) {
+            if (!await checkNetworkStatus()) return;
+
+            await this.syncWithServer();
+
+            this.loading = true;
+            try {
+                const response = await plantApi.getPage(pageNumber, plantsPerPage);
+                const mapped = response.plants.map(p => ({
+                    ...p,
+                    image: p.image ? `http://localhost:8000/${p.image.url}` : ''
+                }));
+
+                this.totalPlants = response.total;
+                const start = (pageNumber - 1) * plantsPerPage;
+                for (let i = 0; i < mapped.length; i++) {
+                    this.plants[start + i] = mapped[i];
+                }
+
+                this.saveToDisk();
+            } catch (err) {
+                this.error = err.message;
+            } finally {
+                this.loading = false;
+            }
+        },
+
         async addPlant(newPlantData) {
             const isOnline = await checkNetworkStatus();
             if (!isOnline) {
@@ -117,7 +124,8 @@ export const usePlantStore = defineStore('plants', {
                     ...response,
                     image: response.image ? `http://localhost:8000/${response.image.url}` : ''
                 };
-                this.plants.push(newPlant);
+                this.plants.unshift(newPlant);
+                this.totalPlants++;
                 this.saveToDisk();
                 await this.fetchPlantStatistics();
 
@@ -134,12 +142,14 @@ export const usePlantStore = defineStore('plants', {
                 id: tempId,
             };
 
-            this.plants.push(tempPlant);
+            this.plants.unshift(tempPlant);
             this.queueOperation({
                 type: CREATE_OPERATION,
                 data: plantData,
                 tempId: tempId
             })
+            this.saveToDisk();
+
             console.log('Plant queued for sync:', tempPlant);
             return tempPlant;
         },
@@ -230,6 +240,7 @@ export const usePlantStore = defineStore('plants', {
         },
 
         init() {
+            //this.clearSyncQueue();
             this.loadFromStorage();
             /*
             setInterval(async () => {

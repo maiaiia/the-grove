@@ -3,7 +3,7 @@ from collections import Counter
 from backend.src.model.plant import Plant
 from backend.src.repository.plant_repository import PlantRepository, plant_repository
 from backend.src.schema import PlantMapper, PlantSummaryResponse, PlantDetailResponse, StatisticsResponse, \
-    EMPTY_STATS_RESPONSE, PlantCreateRequest
+    EMPTY_STATS_RESPONSE, PlantCreateRequest, PageRequestResponse
 from backend.src.schema.plant_schema import PlantUpdateRequest
 from backend.src.service.plant_validator import PlantValidator
 
@@ -12,9 +12,19 @@ class PlantService:
     def __init__(self, repository: PlantRepository):
         self.__repository = repository
 
+    def __len__(self):
+        return len(self.__repository)
+
     def get_all_plants(self) -> list[PlantSummaryResponse]:
         plants = self.__repository.plants
         return [PlantMapper.to_summary_response(plant) for plant in plants]
+
+    def get_plants_in_page(self, page_number: int, plants_per_page: int) -> PageRequestResponse:
+        start = (page_number - 1) * plants_per_page
+        end = min(page_number * plants_per_page, len(self.__repository.plants))
+        plants_in_page = [] if start >= end else self.__repository.plants[start:end]
+        total_plants = len(self.__repository)
+        return PlantMapper.to_page_request_response(total_plants, plants_in_page)
 
     def get_plant(self, plant_id: int) -> PlantDetailResponse:
         return PlantMapper.to_detail_response(self.__repository.get_plant(plant_id))

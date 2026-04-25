@@ -27,6 +27,13 @@ export const plantApi = {
         return response.data
     },
 
+    async getPage(pageNumber, plantsPerPage) {
+        const response = await api.get(`/api/plants/page/${pageNumber}`, {
+            params: { plants_per_page: plantsPerPage }
+        });
+        return response.data;
+    },
+
     async getStats() {
         const response = await api.get('/api/stats')
         return response.data

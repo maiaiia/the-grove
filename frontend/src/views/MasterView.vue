@@ -9,21 +9,23 @@ import GroveTable from "@/components/master-view-components/GroveTable.vue"
 import { getCookie, setCookie } from "@/utils/cookieHelper.js";
 
 const store = usePlantStore()
-onMounted(() => store.fetchPlants())
 const savedView = getCookie('grove_view')
 const viewMode = ref(savedView || 'visual')
 const previousPageNumber = getCookie('previousPageNumber')
-const currentPage = ref( previousPageNumber || 1)
+const currentPage = ref(previousPageNumber ? parseInt(previousPageNumber) : 1)
 
-const perPage = computed(() => viewMode.value === 'visual' ? 5 : 8)
-const totalPages = computed(() => Math.ceil(store.plants.length / perPage.value))
-
-watch(viewMode, (newVal) => {
-  setCookie('grove_view', newVal);
-  currentPage.value = 1;
+const perPage = computed(() => viewMode.value === 'visual' ? 5 : 5)
+const totalPages = computed(() => Math.ceil((store.plants.length + 1) / perPage.value))
+onMounted(() => store.fetchPage(currentPage.value, perPage.value))
+watch([currentPage, perPage], ([newPage, newPerPage]) => {
+  store.fetchPage(newPage, newPerPage)
 })
-watch(currentPage, (newVal) =>{
-  setCookie('previousPageNumber', newVal);
+watch(viewMode, (newVal) => {
+  setCookie('grove_view', newVal)
+  currentPage.value = 1
+})
+watch(currentPage, (newVal) => {
+  setCookie('previousPageNumber', newVal)
 })
 
 const paginatedPlants = computed(() => {
@@ -64,7 +66,7 @@ const handleSelect = (plant) => {
       <GrovePagination
           :current="currentPage"
           :total="totalPages"
-          :total-items="store.plants.length"
+          :total-items="store.totalPlants"
           :items-per-page="perPage"
           @change="currentPage = $event"
       />

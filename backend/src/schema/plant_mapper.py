@@ -1,7 +1,7 @@
 from backend.src.model.plant import Plant
 from backend.src.model.plant_photo import PlantPhoto
 from backend.src.schema.plant_schema import PlantPhotoResponse, PlantSummaryResponse, PlantDetailResponse, \
-    StatisticsResponse, ChartItem, PlantCreateRequest, PlantUpdateRequest, PlantPhotoRequest
+    StatisticsResponse, ChartItem, PlantCreateRequest, PlantUpdateRequest, PlantPhotoRequest, PageRequestResponse
 
 
 class PlantMapper:
@@ -72,6 +72,13 @@ class PlantMapper:
             photo_distribution=[ChartItem(label=k, count=v) for k, v in photo_counts.items()],
             watering_distribution=[ChartItem(label=k, count=v) for k, v in water_counts.items()],
             location_distribution=[ChartItem(label=k, count=v) for k, v in location_counts.items()]
+        )
+
+    @staticmethod
+    def to_page_request_response(total_plants: int, plants_in_page: list[Plant]) -> PageRequestResponse:
+        return PageRequestResponse(
+            total=total_plants,
+            plants= [] if plants_in_page is None else [PlantMapper.to_summary_response(plant) for plant in plants_in_page],
         )
 
     @staticmethod

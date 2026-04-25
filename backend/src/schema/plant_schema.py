@@ -33,6 +33,10 @@ class PlantSummaryResponse(BaseModelWithCaseConversion):
     image:          PlantPhotoResponse | None
     #needs_watering: bool
 
+class PageRequestResponse(BaseModelWithCaseConversion):
+    plants: list[PlantSummaryResponse]
+    total:  int
+
 class PlantDetailResponse(PlantSummaryResponse):
     location:           PlantLocation
     date_planted:       date

@@ -16,7 +16,6 @@ const stats = computed(() => store.stats);
 
 const { running, start, stop } = useSimulation(() => {
   store.fetchPlantStatistics();
-  store.fetchPlants();
 });
 
 </script>

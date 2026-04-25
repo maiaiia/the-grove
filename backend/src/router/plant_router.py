@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from starlette import status
 
+from backend.src.schema import PageRequestResponse
 from backend.src.schema.plant_schema import PlantSummaryResponse, PlantDetailResponse, \
     PlantCreateRequest, PlantUpdateRequest
 from backend.src.service.plant_service import plant_service
@@ -11,12 +12,17 @@ plant_router = APIRouter(prefix="/api/plants", tags=["plants"])
 def get_all_plants():
     return plant_service.get_all_plants()
 
+@plant_router.get('/page/{page_number}', response_model = PageRequestResponse)
+def get_plants_in_page(page_number: int, plants_per_page: int):
+    return plant_service.get_plants_in_page(page_number, plants_per_page)
+
 @plant_router.get("/{plant_id}", response_model=PlantDetailResponse)
 def get_plant_detail(plant_id: int):
     plant = plant_service.get_plant(plant_id)
     if not plant:
         raise HTTPException(status_code=404, detail="Plant not found")
     return plant
+
 
 @plant_router.post(
     "/",
