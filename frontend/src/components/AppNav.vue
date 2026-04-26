@@ -8,8 +8,8 @@
 
     <!-- Right: Navigation -->
     <nav class="nav-links">
-      <router-link to="/grove" class="link">My Grove</router-link>
       <router-link to="/statistics" class="link">Statistics</router-link>
+      <router-link to="/grove" class="link">My Grove</router-link>
 
       <button class="add-btn" @click="open">+ Add Plant</button>
     </nav>
