@@ -1,16 +1,34 @@
 <script setup>
-import {computed} from "vue";
+import { computed } from "vue";
 
 const props = defineProps({
   current: Number,
   total: Number,
-  itemsPerPage: {type: Number, default: 5},
+  itemsPerPage: { type: Number, default: 5 },
   totalItems: Number
 })
 const emit = defineEmits(['change'])
 
-const pages = computed(() => {
-  return Array.from({ length: props.total }, (_, i) => i + 1)
+const visiblePages = computed(() => {
+  const total = props.total
+  const current = props.current
+  const pages = []
+
+  for (let i = 1; i <= total; i++) {
+    // First, Last, Current, or Neighbors
+    if (
+        i <= 2 ||
+        i >= total - 1 ||
+        (i >= current - 1 && i <= current + 1)
+    ) {
+      pages.push(i)
+    } else if (
+        pages[pages.length - 1] !== '...'
+    ) {
+      pages.push('...')
+    }
+  }
+  return pages;
 })
 
 const rangeLabel = computed(() => {
@@ -22,16 +40,30 @@ const rangeLabel = computed(() => {
 
 <template>
   <div class="pagination">
-    <button class="pagination__arrow" :disabled="current === 1" @click="emit('change', current - 1)">‹</button>
     <button
-        v-for="p in pages"
-        :key="p"
-        class="pagination__page"
-        :class="{ active: p === current }"
-        @click="emit('change', p)"
-    >{{ p }}</button>
+        class="pagination__arrow"
+        :disabled="current === 1"
+        @click="emit('change', current - 1)"
+    >‹</button>
+
+    <template v-for="(p, index) in visiblePages" :key="index">
+      <button
+          v-if="p !== '...'"
+          class="pagination__page"
+          :class="{ active: p === current }"
+          @click="emit('change', p)"
+      >{{ p }}</button>
+
+      <span v-else class="pagination__ellipsis">...</span>
+    </template>
+
     <span class="pagination__info">{{ rangeLabel }}</span>
-    <button class="pagination__arrow" :disabled="current === total" @click="emit('change', current + 1)">›</button>
+
+    <button
+        class="pagination__arrow"
+        :disabled="current === total"
+        @click="emit('change', current + 1)"
+    >›</button>
   </div>
 </template>
 
@@ -69,7 +101,13 @@ const rangeLabel = computed(() => {
   opacity: 0.3;
   cursor: default;
 }
-
+.pagination__ellipsis {
+  font-family: var(--space-mono), monospace;
+  font-size: 12px;
+  color: var(--mongoose);
+  padding: 0 4px;
+  user-select: none;
+}
 .pagination__info {
   font-family: var(--space-mono), monospace;
   font-size: 10px;
