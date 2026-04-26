@@ -84,7 +84,7 @@ const { isFetching, hasMore } = useInfiniteScroll(async () => {
 .loader, .end-message {
   padding: 20px;
   text-align: center;
-  font-family: var(--space-mono);
+  font-family: var(--space-mono), monospace;
   font-size: 10px;
   color: var(--mongoose);
   text-transform: uppercase;
@@ -152,35 +152,11 @@ td { padding: 12px 16px; font-family: var(--space-mono), monospace; font-size: 1
   font-size: 16px;
   cursor: pointer;
   padding: 8px;
-  transition: all 0.2s ease;
+  transition: all ease;
 }
 
 .delete-btn:hover {
   color: var(--burnt-umber);
   transform: scale(1.2);
-}
-
-.table-row-enter-active {
-  transition: all 0.5s ease;
-  transition-delay: calc(var(--row-index) * 0.05s);
-}
-
-.table-row-leave-active {
-  transition: all 0.3s ease;
-  transition-delay: calc(var(--row-index) * 0.03s);
-}
-
-.table-row-enter-from {
-  opacity: 0;
-  transform: translateX(-30px);
-}
-
-.table-row-leave-to {
-  opacity: 0;
-  transform: translateX(30px);
-}
-
-.table-row-move {
-  transition: transform 0.4s ease;
 }
 </style>
