@@ -1,7 +1,3 @@
-"""
-Server-side validation for plant data.
-Validates business rules and data integrity.
-"""
 import datetime
 from typing import Optional
 
@@ -9,7 +5,7 @@ from backend.src.model.plant_category import PlantCategory
 from backend.src.model.plant_location import PlantLocation
 
 
-class PlantValidationError(Exception):
+class PlantValidationError(ValueError):
     def __init__(self, field: str, message: str):
         self.field = field
         self.message = message

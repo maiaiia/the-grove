@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import {checkNetworkStatus, plantApi} from '@/services/api'
+import {checkNetworkStatus, plantApi} from '@/services/gqlapi.js'
 
 let PLANT_STORAGE       = 'grove_plants'
 let SYNC_QUEUE_STORAGE  = 'grove_sync_queue'
@@ -88,7 +88,7 @@ export const usePlantStore = defineStore('plants', {
         },
 
         async fetchPage(pageNumber, append = false) {
-            // Skip if already loaded (for infinite scroll)
+            // Skip if already loaded
             if (this.loadedPages.has(pageNumber)) {
                 console.log(`Page ${pageNumber} already loaded, skipping fetch`)
                 return true
@@ -112,18 +112,15 @@ export const usePlantStore = defineStore('plants', {
                 this.totalPlants = response.total;
 
                 if (append) {
-                    // Append for infinite scroll
                     this.plants.push(...mapped);
                 } else {
-                    // Replace for initial load or view switch
                     this.plants = mapped;
-                    this.loadedPages.clear(); // Reset loaded pages
+                    this.loadedPages.clear();
                 }
 
                 this.loadedPages.add(pageNumber);
                 this.saveToDisk();
 
-                // Return whether there's more data
                 return mapped.length > 0;
             } catch (err) {
                 this.error = err.message;
@@ -144,11 +141,9 @@ export const usePlantStore = defineStore('plants', {
                     image: data.image?.url ? `http://localhost:8000/${data.image.url}` : ''
                 };
 
-                // Add to the beginning of the list
                 this.plants.push(newPlant);
                 this.totalPlants++;
 
-                // Trim if list gets too long
                 const maxItems = this.loadedPages.size * this.pageSize + this.pageSize;
                 if (this.plants.length > maxItems) {
                     this.plants = this.plants.slice(0, maxItems);
@@ -156,7 +151,6 @@ export const usePlantStore = defineStore('plants', {
 
                 this.saveToDisk();
 
-                // This will update the stats page live
                 await this.fetchPlantStatistics();
 
                 console.log('[Store] New plant added via WebSocket:', newPlant.name);
@@ -176,7 +170,7 @@ export const usePlantStore = defineStore('plants', {
                     ...response,
                     image: response.image ? `http://localhost:8000/${response.image.url}` : ''
                 };
-                this.plants.unshift(newPlant);
+                this.plants.push(newPlant);
                 this.totalPlants++;
                 this.saveToDisk();
                 await this.fetchPlantStatistics();
@@ -208,6 +202,7 @@ export const usePlantStore = defineStore('plants', {
 
         async deletePlant(id) {
             this.plants = this.plants.filter(p => p.id !== id)
+            this.totalPlants--;
             this.saveToDisk();
 
             const isOnline = await checkNetworkStatus();

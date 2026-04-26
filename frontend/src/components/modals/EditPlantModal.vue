@@ -58,8 +58,16 @@ async function submit() {
     }))
     serverError.value=null;
     close()
-  } catch (e) {
-    serverError.value = e.response?.data?.message || "The Grove is currently unreachable."
+  } catch (error) {
+    if (error.message) {
+      serverError.value = error.message
+    }
+    else if (error.response?.data?.message) {
+      serverError.value = error.response.data.message
+    }
+    else {
+      serverError.value = "The Grove is currently unreachable."
+    }
   }
 }
 

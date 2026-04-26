@@ -1,12 +1,19 @@
 from pathlib import Path
 
+import strawberry
 from fastapi import FastAPI
+
 from fastapi.middleware.cors import CORSMiddleware
+from strawberry.fastapi import GraphQLRouter
 from starlette import status
 from starlette.responses import JSONResponse
 
-from backend.src.router import plant_router, app_router, stats_router, simulation_router
+from backend.src.graphql.resolvers import Query, Mutation
+from backend.src.router import simulation_router
 from backend.src.service.plant_validator import PlantValidationError
+
+schema = strawberry.Schema(query=Query, mutation=Mutation)
+graphql_app = GraphQLRouter(schema)
 
 app = FastAPI(title = "The Grove API")
 from fastapi.staticfiles import StaticFiles
@@ -25,10 +32,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(plant_router)
-app.include_router(stats_router)
-app.include_router(app_router)
 app.include_router(simulation_router)
+app.include_router(graphql_app, prefix="/graphql")
 
 @app.exception_handler(PlantValidationError)
 async def plant_validation_exception_handler(request, exception: PlantValidationError):
@@ -37,7 +42,9 @@ async def plant_validation_exception_handler(request, exception: PlantValidation
         content={"message": f"Validation Failed: {exception.message}"},
     )
 
-
+@app.api_route("/api/health", methods=["GET", "HEAD"])
+def health():
+    return {"status": "ok"}
 @app.get("/")
 def root():
     return {"message": "The Grove's API is working!"}
