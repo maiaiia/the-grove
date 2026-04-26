@@ -1,20 +1,29 @@
 <script setup>
-import router from "@/router/index.js";
-import {useDeletePlantModal} from "@/composables/useDeletePlantModal.js";
+import router from "@/router/index.js"
+import {useDeletePlantModal} from "@/composables/useDeletePlantModal.js"
+import {ref} from "vue"
+import {useInfiniteScroll} from "@/composables/useInfiniteScroll.js"
 
-defineProps({ plants: Array })
-const emit = defineEmits(['select'])
-
+const props = defineProps({ plants: Array })
+const emit = defineEmits(['select', 'load-more'])
+const tableContainer = ref(null)
 const { open: openDeleteModal } = useDeletePlantModal()
 
 const goToPlant = (plant) => router.push(`/plant/${plant.id}`)
 const handleDelete = (plant) => {
   openDeleteModal(plant)
 }
+
+const { isFetching, hasMore } = useInfiniteScroll(async () => {
+  return emit('load-more')
+}, {
+  target: tableContainer,
+  threshold: 150
+})
 </script>
 
 <template>
-  <div class="table-container">
+  <div class="table-container" ref="tableContainer">
     <table class="grove-table">
       <thead>
       <tr>
@@ -61,6 +70,8 @@ const handleDelete = (plant) => {
         </tr>
       </TransitionGroup>
     </table>
+    <div v-if="isFetching" class="loader">Updating Grove...</div>
+    <div v-if="!hasMore && plants.length > 0" class="end-message">End of the garden.</div>
   </div>
 </template>
 
@@ -69,7 +80,15 @@ const handleDelete = (plant) => {
   font-family: var(--space-mono), monospace;
   color: var(--green-kelp)
 }
-.table-container { flex: 1; overflow-y: auto; }
+.table-container { flex: 1; overflow-y: auto; min-height: 0; }
+.loader, .end-message {
+  padding: 20px;
+  text-align: center;
+  font-family: var(--space-mono);
+  font-size: 10px;
+  color: var(--mongoose);
+  text-transform: uppercase;
+}
 .grove-table { width: 100%; border-collapse: collapse; text-align: left; }
 th {
   font-family: var(--space-mono), monospace;
@@ -141,7 +160,6 @@ td { padding: 12px 16px; font-family: var(--space-mono), monospace; font-size: 1
   transform: scale(1.2);
 }
 
-/* Table row staggered transitions */
 .table-row-enter-active {
   transition: all 0.5s ease;
   transition-delay: calc(var(--row-index) * 0.05s);

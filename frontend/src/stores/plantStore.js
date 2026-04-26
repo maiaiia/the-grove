@@ -15,8 +15,9 @@ export const usePlantStore = defineStore('plants', {
         loading: false,
         error: null,
 
-        lastFetched: 0,
         totalPlants: 0,
+        pageSize: 20,
+        loadedPages: new Set(),
 
         syncQueue: [],
     }),
@@ -85,33 +86,55 @@ export const usePlantStore = defineStore('plants', {
 
         },
 
-        async fetchPage(pageNumber, plantsPerPage) {
-            if (!await checkNetworkStatus()) return;
+        async fetchPage(pageNumber, append = false) {
+            // Skip if already loaded (for infinite scroll)
+            if (this.loadedPages.has(pageNumber)) {
+                console.log(`Page ${pageNumber} already loaded, skipping fetch`)
+                return true
+            }
+
+            if (!await checkNetworkStatus()) {
+                console.log('Offline - using cached data')
+                return false
+            }
 
             await this.syncWithServer();
 
             this.loading = true;
             try {
-                const response = await plantApi.getPage(pageNumber, plantsPerPage);
+                const response = await plantApi.getPage(pageNumber, this.pageSize);
                 const mapped = response.plants.map(p => ({
                     ...p,
                     image: p.image ? `http://localhost:8000/${p.image.url}` : ''
                 }));
 
                 this.totalPlants = response.total;
-                const start = (pageNumber - 1) * plantsPerPage;
-                for (let i = 0; i < mapped.length; i++) {
-                    this.plants[start + i] = mapped[i];
+
+                if (append) {
+                    // Append for infinite scroll
+                    this.plants.push(...mapped);
+                } else {
+                    // Replace for initial load or view switch
+                    this.plants = mapped;
+                    this.loadedPages.clear(); // Reset loaded pages
                 }
 
+                this.loadedPages.add(pageNumber);
                 this.saveToDisk();
+
+                // Return whether there's more data
+                return mapped.length > 0;
             } catch (err) {
                 this.error = err.message;
+                return false;
             } finally {
                 this.loading = false;
             }
         },
-
+        resetPages() {
+            this.plants = [];
+            this.loadedPages.clear();
+        },
         async addPlant(newPlantData) {
             const isOnline = await checkNetworkStatus();
             if (!isOnline) {
@@ -242,16 +265,6 @@ export const usePlantStore = defineStore('plants', {
         init() {
             //this.clearSyncQueue();
             this.loadFromStorage();
-            /*
-            setInterval(async () => {
-                if (this.syncQueue.length > 0) {
-                    const isOnline = await checkNetworkStatus();
-                    if (isOnline) {
-                        console.log("Heartbeat detected server. Auto-syncing queue...");
-                        await this.syncWithServer();
-                    }
-                }
-            }, 10000); */
 
             console.log("Plant Store Initialized");
         },

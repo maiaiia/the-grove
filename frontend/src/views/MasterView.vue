@@ -6,35 +6,68 @@ import GroveEyebrow from "@/components/master-view-components/GroveEyebrow.vue"
 import GrovePagination from "@/components/master-view-components/GrovePagination.vue"
 import GroveVisual from "@/components/master-view-components/GroveVisual.vue"
 import GroveTable from "@/components/master-view-components/GroveTable.vue"
-import { getCookie, setCookie } from "@/utils/cookieHelper.js";
+import { getCookie, setCookie } from "@/utils/cookieHelper.js"
 
 const store = usePlantStore()
 const savedView = getCookie('grove_view')
 const viewMode = ref(savedView || 'visual')
 const previousPageNumber = getCookie('previousPageNumber')
-const currentPage = ref(previousPageNumber ? parseInt(previousPageNumber) : 1)
+const visualPage = ref(previousPageNumber ? parseInt(previousPageNumber) : 1)
 
-const perPage = computed(() => viewMode.value === 'visual' ? 5 : 5)
-const totalPages = computed(() => Math.ceil((store.plants.length + 1) / perPage.value))
-onMounted(() => store.fetchPage(currentPage.value, perPage.value))
-watch([currentPage, perPage], ([newPage, newPerPage]) => {
-  store.fetchPage(newPage, newPerPage)
+// Visual mode: display 5 items per "page" (UI pagination)
+const visualPerPage = 5
+const totalVisualPages = computed(() => Math.ceil(store.totalPlants / visualPerPage))
+
+// Initialize
+onMounted(async () => {
+  await store.fetchPage(1, false)
 })
-watch(viewMode, (newVal) => {
+
+// Watch view mode changes
+watch(viewMode, async (newVal) => {
   setCookie('grove_view', newVal)
-  currentPage.value = 1
-})
-watch(currentPage, (newVal) => {
-  setCookie('previousPageNumber', newVal)
+
+  if (newVal === 'visual') {
+    store.resetPages()
+    visualPage.value = 1
+    await store.fetchPage(1, false)
+  } else {
+    store.resetPages()
+    await store.fetchPage(1, false)
+  }
 })
 
-const paginatedPlants = computed(() => {
-  const start = (currentPage.value - 1) * perPage.value
-  return store.plants.slice(start, start + perPage.value)
+// Watch visual page changes
+watch(visualPage, async (newPage) => {
+  setCookie('previousPageNumber', newPage)
+
+  // Calculate which server page(s) we need for this visual page
+  const startIndex = (newPage - 1) * visualPerPage
+  const endIndex = startIndex + visualPerPage
+  const startServerPage = Math.floor(startIndex / store.pageSize) + 1
+  const endServerPage = Math.floor(endIndex / store.pageSize) + 1
+
+  // Fetch any missing pages
+  for (let page = startServerPage; page <= endServerPage; page++) {
+    await store.fetchPage(page, page > 1) // append if not first page
+  }
 })
 
-const heroPlant = computed(() => paginatedPlants.value[0])
-const gridPlants = computed(() => paginatedPlants.value.slice(1))
+// Plants for visual mode (sliced from store)
+const visualPaginatedPlants = computed(() => {
+  const start = (visualPage.value - 1) * visualPerPage
+  return store.plants.slice(start, start + visualPerPage)
+})
+
+const heroPlant = computed(() => visualPaginatedPlants.value[0])
+const gridPlants = computed(() => visualPaginatedPlants.value.slice(1))
+
+// Handle infinite scroll for table view
+const handleLoadMore = async () => {
+  const nextPage = Math.floor(store.plants.length / store.pageSize) + 1
+  const hasMore = await store.fetchPage(nextPage, true)
+  return hasMore
+}
 
 const handleSelect = (plant) => {
   console.log('Navigate to detail for:', plant.name)
@@ -47,7 +80,7 @@ const handleSelect = (plant) => {
 
     <div class="grove__inner">
       <GroveEyebrow
-          :count="store.plants.length"
+          :count="store.totalPlants"
           v-model:currentView="viewMode"
       />
 
@@ -59,16 +92,18 @@ const handleSelect = (plant) => {
 
       <GroveTable
           v-else
-          :plants="paginatedPlants"
+          :plants="store.plants"
           @select="handleSelect"
+          @load-more="handleLoadMore"
       />
 
       <GrovePagination
-          :current="currentPage"
-          :total="totalPages"
+          v-if="viewMode === 'visual'"
+          :current="visualPage"
+          :total="totalVisualPages"
           :total-items="store.totalPlants"
-          :items-per-page="perPage"
-          @change="currentPage = $event"
+          :items-per-page="visualPerPage"
+          @change="visualPage = $event"
       />
     </div>
   </div>
