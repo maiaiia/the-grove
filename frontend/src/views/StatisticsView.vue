@@ -14,8 +14,9 @@ const store = usePlantStore();
 onMounted(()=>store.fetchPlantStatistics());
 const stats = computed(() => store.stats);
 
-const { running, start, stop } = useSimulation(() => {
-  store.fetchPlantStatistics();
+const { running, start, stop } = useSimulation((newId) => {
+  //store.fetchPlantStatistics();
+  store.handleNewPlantFromWebSocket(newId);
 });
 
 </script>

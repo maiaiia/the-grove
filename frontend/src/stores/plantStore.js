@@ -77,6 +77,7 @@ export const usePlantStore = defineStore('plants', {
             try{
                 const data = await plantApi.getStats();
                 this.stats = data;
+                this.totalPlants = data.totalPlants
             } catch (err) {
                 this.error = "Could not load plant statistcs.";
                 console.error(err);
@@ -134,6 +135,34 @@ export const usePlantStore = defineStore('plants', {
         resetPages() {
             this.plants = [];
             this.loadedPages.clear();
+        },
+        async handleNewPlantFromWebSocket(plantId) {
+            try {
+                const data = await plantApi.getPlant(plantId);
+                const newPlant = {
+                    ...data,
+                    image: data.image?.url ? `http://localhost:8000/${data.image.url}` : ''
+                };
+
+                // Add to the beginning of the list
+                this.plants.push(newPlant);
+                this.totalPlants++;
+
+                // Trim if list gets too long
+                const maxItems = this.loadedPages.size * this.pageSize + this.pageSize;
+                if (this.plants.length > maxItems) {
+                    this.plants = this.plants.slice(0, maxItems);
+                }
+
+                this.saveToDisk();
+
+                // This will update the stats page live
+                await this.fetchPlantStatistics();
+
+                console.log('[Store] New plant added via WebSocket:', newPlant.name);
+            } catch (error) {
+                console.error('[Store] Failed to fetch new plant:', error);
+            }
         },
         async addPlant(newPlantData) {
             const isOnline = await checkNetworkStatus();
