@@ -34,10 +34,10 @@ class PhotoService:
     def get_latest_photo(self, plant_id: int) -> PlantPhoto or None:
         return self.__repository.get_latest_photo_for_plant(plant_id)
 
-    def delete_photo(self, photo_id: int):
-        self.__repository.delete_photo(photo_id)
+    def delete_photo(self, photo_id: int) -> bool:
+        return self.__repository.delete_photo(photo_id)
 
-    def delete_photos_for_plant(self, plant_id: int):
-        self.__repository.delete_photos_for_plant(plant_id)
+    def delete_photos_for_plant(self, plant_id: int) -> bool:
+        return self.__repository.delete_photos_for_plant(plant_id)
 
 photo_service = PhotoService(photo_repository)

@@ -1,6 +1,6 @@
 <script setup>
 defineProps({ photo: Object, year: Number, active: Boolean })
-defineEmits(['click'])
+defineEmits(['click', 'delete'])
 
 function formatDate(dateStr) {
   return new Date(dateStr).toLocaleDateString('en-GB', {
@@ -20,6 +20,9 @@ function formatDate(dateStr) {
       <span class="history-item__desc">{{ photo.caption || '—' }}</span>
       <span class="history-item__date">{{ formatDate(photo.date) }}</span>
       <span class="history-item__year">Year {{ year }}</span>
+    </div>
+    <div class="history-item__actions" @click.stop="$emit('delete', photo.id)">
+      x
     </div>
   </div>
 </template>
@@ -63,6 +66,7 @@ function formatDate(dateStr) {
   display: flex;
   flex-direction: column;
   gap: 2px;
+  flex: 1;
 }
 
 .history-item__desc {
@@ -90,5 +94,12 @@ function formatDate(dateStr) {
   align-items: center;
   justify-content: center;
   background: rgba(255,255,255,0.05);
+}
+.history-item__actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  color: var(--parchment);
+  font-weight: lighter;
 }
 </style>

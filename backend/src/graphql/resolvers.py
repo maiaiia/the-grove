@@ -170,7 +170,7 @@ class Mutation:
         return _photo(new_photo)
 
     @strawberry.mutation
-    def remove_plant_photo(self, photo_id: int) -> bool:
+    def delete_photo(self, photo_id: int) -> bool:
         return plant_service.delete_photo(photo_id)
 
 #endregion

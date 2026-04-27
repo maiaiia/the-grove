@@ -134,5 +134,11 @@ export const plantApi = {
       }
     }`, { id: toInt(id), input: input })
         return data.updatePlant
-    }
+    },
+    async deletePhoto(photoId) {
+        const data = await gql(`mutation($id: Int!) {
+      deletePhoto(photoId: $id)
+    }`, { id: toInt(photoId) });
+        return data.deletePhoto;
+    },
 }

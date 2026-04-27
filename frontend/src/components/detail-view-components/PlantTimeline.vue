@@ -2,7 +2,9 @@
 import { ref, computed } from 'vue'
 import TimelineHistoryItem from '@/components/detail-view-components/TimelineHistoryItem.vue'
 import TimelineFeatured from '@/components/detail-view-components/TimelineFeatured.vue'
+import { usePlantStore } from '@/stores/plantStore'
 
+const store = usePlantStore()
 const props = defineProps({ plant: Object })
 const activePhotoIndex = ref(null)
 
@@ -23,6 +25,11 @@ function yearsSincePlanted(dateStr) {
   const photo = new Date(dateStr)
   return Math.floor((photo - start) / (1000 * 60 * 60 * 24 * 365))
 }
+function handleDeletePhoto(photoId) {
+  if (confirm('Are you sure you want to delete this photo?')) { //TODO - use a modal
+    store.deletePhoto(photoId)
+  }
+}
 </script>
 
 <template>
@@ -37,6 +44,7 @@ function yearsSincePlanted(dateStr) {
           :year="yearsSincePlanted(photo.date)"
           :active="activePhoto === photo"
           @click="activePhotoIndex = i"
+          @delete="handleDeletePhoto"
       />
     </div>
     <p class="timeline__empty" v-else>No photos yet.</p>

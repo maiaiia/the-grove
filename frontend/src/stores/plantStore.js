@@ -6,6 +6,7 @@ let SYNC_QUEUE_STORAGE  = 'grove_sync_queue'
 
 let DELETE_OPERATION = 'DELETE'
 let CREATE_OPERATION = 'CREATE'
+let DELETE_PHOTO_OPERATION = 'DELETE_PHOTO'
 
 export const usePlantStore = defineStore('plants', {
     state: () => ({
@@ -241,6 +242,41 @@ export const usePlantStore = defineStore('plants', {
             }
         },
 
+        async deletePhoto(photoId) {
+            if (!this.currentPlant) return;
+
+            const originalPhotos = [...this.currentPlant.photos];
+            this.currentPlant.photos = this.currentPlant.photos.filter(p => p.id !== photoId);
+
+            if (this.currentPlant.image?.id === photoId) {
+                const nextPhoto = this.currentPlant.photos[this.currentPlant.photos.length - 1];
+                this.currentPlant.image = nextPhoto || null;
+            }
+
+            const plantInList = this.plants.find(p => p.id === this.currentPlant.id);
+            if (plantInList) {
+                plantInList.image = this.currentPlant.image;
+            }
+
+            try {
+                const isOnline = await checkNetworkStatus();
+                if (isOnline) {
+                    await plantApi.deletePhoto(photoId);
+                    await this.fetchPlantStatistics();
+                } else {
+                    this.queueOperation({
+                        type: DELETE_PHOTO_OPERATION,
+                        photoId: photoId
+                    });
+                }
+            } catch (err) {
+                // Rollback on failure
+                this.currentPlant.photos = originalPhotos;
+                this.error = "Failed to delete photo.";
+                console.error(err);
+            }
+        },
+
         async syncWithServer() {
             if (this.syncQueue.length === 0 || !await checkNetworkStatus()) return;
 
@@ -276,6 +312,9 @@ export const usePlantStore = defineStore('plants', {
                 }
                 case DELETE_OPERATION: {
                     return await plantApi.deletePlant(operation.plantId);
+                }
+                case DELETE_PHOTO_OPERATION:{
+                    return await plantApi.deletePhoto(operation.photoId);
                 }
                 default:
                     console.warn("Unknown operation type:", operation.type);
