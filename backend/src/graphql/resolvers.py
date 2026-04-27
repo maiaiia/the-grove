@@ -7,11 +7,12 @@ from backend.src.graphql.types import (
 )
 from backend.src.service import plant_service
 
-
 #region helpers
 
 def _photo(p):
     return PlantPhotoType(
+        id=p.id,
+        plant_id=p.plant_id,
         url=p.url,
         caption=p.caption,
         date=p.date
@@ -42,7 +43,7 @@ def _detail(d) -> PlantDetailType:
         photo_count=d.photo_count,
         watering_schedule=d.watering_schedule,
         notes=d.notes,
-        photos=[PlantPhotoType(url=p.url, caption=p.caption, date=p.date)
+        photos=[PlantPhotoType(id=p.id, plant_id=p.plant_id, url=p.url, caption=p.caption, date=p.date)
                 for p in d.photos]
     )
 
@@ -112,7 +113,7 @@ class UpdatePlantInput:
     watering_schedule: int
     notes: str
     last_watered: date
-    photos: list[PlantPhotoInput]
+    photos: list[PlantPhotoInput] #todo - remove
 
 #endregion
 
@@ -152,5 +153,24 @@ class Mutation:
     def delete_plant(self, plant_id: int) -> bool:
         plant_service.delete_plant(plant_id)
         return True
+
+    @strawberry.mutation
+    def add_plant_photo(
+            self,
+            plant_id: int,
+            filename: str,
+            caption: str
+    ) -> PlantPhotoType:
+        new_photo = plant_service.add_photo(
+            plant_id=plant_id,
+            filename=filename,
+            caption=caption,
+            date=date.today()
+        )
+        return _photo(new_photo)
+
+    @strawberry.mutation
+    def remove_plant_photo(self, photo_id: int) -> bool:
+        return plant_service.delete_photo(photo_id)
 
 #endregion

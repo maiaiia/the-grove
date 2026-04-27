@@ -13,9 +13,11 @@ class BaseModelWithCaseConversion(BaseModel):
     )
 
 class PhotoBase(BaseModelWithCaseConversion):
-    url: str
-    caption: str
-    date: date
+    id:         int
+    plant_id:   int
+    url:        str
+    caption:    str
+    date:       date
 
 class PlantPhotoRequest(PhotoBase):
     pass
@@ -86,3 +88,12 @@ class PlantUpdateRequest(PlantBase):
     notes:          str
     last_watered:   date
     photos:         list[PlantPhotoRequest]
+
+
+#todo - plant detail response should not have an image.
+# create a new schema that contains a plant detail response AND an image
+# and name it something else
+
+
+
+

@@ -1,21 +1,17 @@
 import datetime
+from dataclasses import dataclass
 
+IMAGE_FOLDER_PATH = 'backend/src/images/'
+
+@dataclass
 class PlantPhoto:
-    def __init__(self, filename: str, caption: str, date = datetime.date):
-        self.__filename = filename
-        self.__caption = caption
-        self.__date = date
+    filename:   str
+    caption:    str
+    date:       datetime.date
+    plant_id:   int = 0
+    id:         int = 0
 
     @property
-    def filename(self):
-        return self.__filename
-    @property
-    def caption(self):
-        return self.__caption
-    @property
-    def date(self):
-        return self.__date
-
-    @caption.setter
-    def caption(self, caption: str):
-        self.__caption = caption
+    def url(self):
+        #todo + / plant_id + / filename
+        return IMAGE_FOLDER_PATH + self.filename

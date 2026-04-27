@@ -1,3 +1,4 @@
+import datetime
 from collections import Counter
 
 from backend.src.model import Plant
@@ -5,29 +6,35 @@ from backend.src.repository import PlantRepository, plant_repository
 from backend.src.schema import PlantMapper, PlantSummaryResponse, PlantDetailResponse, StatisticsResponse, \
     EMPTY_STATS_RESPONSE, PlantCreateRequest, PageRequestResponse
 from backend.src.schema.plant_schema import PlantUpdateRequest
+from backend.src.service.photo_service import PhotoService, photo_service
 from backend.src.service.plant_validator import PlantValidator
 
 
 class PlantService:
-    def __init__(self, repository: PlantRepository):
+    def __init__(self, repository: PlantRepository, service: PhotoService):
         self.__repository = repository
-
-    def __len__(self):
-        return len(self.__repository)
+        self.__photo_service = service
 
     def get_all_plants(self) -> list[PlantSummaryResponse]:
         plants = self.__repository.plants
-        return [PlantMapper.to_summary_response(plant) for plant in plants]
+        return [PlantMapper.to_summary_response(plant, self.__photo_service.get_latest_photo(plant.id)) for plant in plants]
 
     def get_plants_in_page(self, page_number: int, plants_per_page: int) -> PageRequestResponse:
         start = (page_number - 1) * plants_per_page
         end = min(page_number * plants_per_page, len(self.__repository.plants))
-        plants_in_page = [] if start >= end else self.__repository.plants[start:end]
+
         total_plants = len(self.__repository)
-        return PlantMapper.to_page_request_response(total_plants, plants_in_page)
+        plants_in_page = [] if start >= end else self.__repository.plants[start:end]
+        plants_and_thumbnails = {} if plants_in_page is [] \
+            else {plant.id : [plant, self.__photo_service.get_latest_photo(plant.id)]
+                  for plant in plants_in_page}
+        return PlantMapper.to_page_request_response(total_plants, plants_and_thumbnails)
 
     def get_plant(self, plant_id: int) -> PlantDetailResponse:
-        return PlantMapper.to_detail_response(self.__repository.get_plant(plant_id))
+        return PlantMapper.to_detail_response(
+            self.__repository.get_plant(plant_id),
+            self.__photo_service.get_photos_per_plant(plant_id)
+        )
 
     def get_statistics(self) -> StatisticsResponse:
         total_plants = len(self.__repository)
@@ -36,7 +43,7 @@ class PlantService:
 
         all_plants = self.__repository.plants
         oldest_plant = max(p.age for p in all_plants)
-        total_photos = sum(len(p.photos) for p in all_plants if p.photos)
+        total_photos = len(self.__photo_service) #TODO ugly
         unique_locations = len({p.location for p in all_plants if p.location})
 
         age_counts = self._get_age_counts(all_plants)
@@ -73,11 +80,10 @@ class PlantService:
             else:
                 age_counts['25y+'] += 1
         return age_counts
-    @staticmethod
-    def _get_photo_counts(all_plants: list[Plant]) -> Counter:
+    def _get_photo_counts(self, all_plants: list[Plant]) -> Counter:
         photo_counts = Counter()
         for p in all_plants:
-            count = len(p.photos) if p.photos else 0
+            count = self.__photo_service.get_photo_count(p.id)
             if count == 0:
                 photo_counts['0 photos'] += 1
             elif 1 <= count <= 2:
@@ -118,11 +124,13 @@ class PlantService:
         )
         plant_model = PlantMapper.create_request_to_plant(request)
         saved_plant = self.__repository.save(plant_model)
-        return PlantMapper.to_detail_response(saved_plant)
+        return PlantMapper.to_detail_response(saved_plant, [])
 
     def delete_plant(self, plant_id: int):
         self.__repository.delete_plant(plant_id)
+        self.__photo_service.delete_photos_for_plant(plant_id)
 
+    #TODO - update request probably shouldn't include photos :))
     def update_plant(self, plant_id: int, request: PlantUpdateRequest):
         plant = self.__repository.get_plant(plant_id)
         if not plant:
@@ -138,7 +146,6 @@ class PlantService:
             watering_schedule=request.watering_schedule,
             last_watered=request.last_watered,
             notes=request.notes,
-            photos=request.photos
         )
 
         plant.name = request.name
@@ -150,6 +157,13 @@ class PlantService:
         plant.notes = request.notes
 
         self.__repository.save(plant)
-        return PlantMapper.to_detail_response(plant)
+        #TODO - i suppose this should be a different type of response, because it really really shouldn't include the photos.
+        # uhghghghghghhghgahahahglajsflkjh
+        return PlantMapper.to_detail_response(plant, self.__photo_service.get_photos_per_plant(plant_id))
 
-plant_service = PlantService(plant_repository)
+    def add_photo(self, plant_id: int, filename: str, caption: str, date: datetime.date):
+        return self.__photo_service.add_photo(plant_id, filename, caption, date)
+    def delete_photo(self, photo_id: int):
+        return self.__photo_service.delete_photo(photo_id)
+
+plant_service = PlantService(plant_repository, photo_service)

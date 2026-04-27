@@ -27,38 +27,55 @@ export const checkNetworkStatus = async () => {
     }
 }
 
+const PHOTO_FIELDS = `
+  id
+  plantId
+  url
+  caption
+  date
+`;
+const PLANT_SUMMARY_FIELDS = `
+  id
+  name
+  latinName
+  category
+  lastWatered
+  age
+  image { ${PHOTO_FIELDS} }
+`;
+const PLANT_DETAIL_FIELDS = `
+  ${PLANT_SUMMARY_FIELDS}
+  location
+  datePlanted
+  photoCount
+  wateringSchedule
+  notes
+  photos { ${PHOTO_FIELDS} }
+`;
+
 export const plantApi = {
     async getAllPlants() {
         const data = await gql(`query {
-      plants { id name latinName category lastWatered age
-        image { url caption date }
-      }
-    }`)
+            plants { ${PLANT_SUMMARY_FIELDS} }
+        }`)
         return data.plants
     },
 
     async getPlant(id) {
         const data = await gql(`query($id: Int!) {
-      plant(plantId: $id) {
-        id name latinName category lastWatered age
-        location datePlanted photoCount wateringSchedule notes
-        image { url caption date }
-        photos { url caption date }
-      }
-    }`, { id: toInt(id) })
+          plant(plantId: $id) { ${PLANT_DETAIL_FIELDS} }          
+        }`, { id: toInt(id) });
         return data.plant
     },
 
     async getPage(pageNumber, plantsPerPage) {
         const data = await gql(`query($p: Int!, $pp: Int!) {
-      plantsPage(pageNumber: $p, plantsPerPage: $pp) {
-        total
-        plants { id name latinName category lastWatered age
-          image { url caption date }
-        }
-      }
-    }`, { p: pageNumber, pp: plantsPerPage })
-        return data.plantsPage   // has .total and .plants — same shape the store expects
+            plantsPage(pageNumber: $p, plantsPerPage: $pp) {
+                total
+                plants { ${PLANT_SUMMARY_FIELDS} }
+            }
+        }`, { p: pageNumber, pp: plantsPerPage });
+        return data.plantsPage;
     },
 
     async getStats() {
@@ -72,7 +89,7 @@ export const plantApi = {
         locationDistribution { label count }
       }
     }`)
-        return data.statistics   // store accesses data.totalPlants etc. directly — still works
+        return data.statistics
     },
 
     async addPlant(plantData) {
@@ -85,13 +102,10 @@ export const plantApi = {
             wateringSchedule: plantData.wateringSchedule,
         }
         const data = await gql(`mutation($input: CreatePlantInput!) {
-      createPlant(input: $input) {
-        id name latinName category lastWatered age
-        location datePlanted photoCount wateringSchedule notes
-        image { url caption date }
-        photos { url caption date }
-      }
-    }`, { input })
+          createPlant(input: $input) {
+            ${ PLANT_DETAIL_FIELDS }
+          }
+        }`, { input })
         return data.createPlant
     },
 
@@ -116,10 +130,7 @@ export const plantApi = {
         };
         const data = await gql(`mutation($id: Int!, $input: UpdatePlantInput!) {
       updatePlant(plantId: $id, input: $input) {
-        id name latinName category lastWatered age
-        location datePlanted photoCount wateringSchedule notes
-        image { url caption date }
-        photos { url caption date }
+        ${PLANT_DETAIL_FIELDS}
       }
     }`, { id: toInt(id), input: input })
         return data.updatePlant

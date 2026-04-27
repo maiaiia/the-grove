@@ -42,7 +42,6 @@ class SimulationService:
                     location=random.choice(list(PlantLocation)),
                     date_planted = date_planted,
                     watering_schedule=random.randint(1,14),
-                    photos=[],
                     last_watered=fake.date_between(start_date=date_planted, end_date='today'),
                     notes=fake.text(),
                 )

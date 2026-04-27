@@ -4,6 +4,8 @@ from typing import Optional
 
 @strawberry.type
 class PlantPhotoType:
+    id: int
+    plant_id: int
     url: str
     caption: str
     date: date

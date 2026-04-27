@@ -18,13 +18,6 @@ class PlantRepository:
                 PlantLocation.WINDOWSILL,
                 datetime.date(2023, 3, 1),
                 2,
-                [
-                    PlantPhoto(
-                        "monstera.jpg",
-                        "Looking particularly gorgeous today!",
-                        datetime.date(2024, 3, 2)
-                    ),
-                ],
                 datetime.date(2026, 3, 20),
                 "Grew from a single node cutting. Now has over 12 large leaves with beautiful fenestration."
             ),
@@ -36,13 +29,6 @@ class PlantRepository:
                 PlantLocation.INDOORS,
                 datetime.date(2014, 3, 1),
                 2,
-                [
-                    PlantPhoto(
-                        "oldjuniper.jpeg",
-                        "",
-                        datetime.date(2026, 3, 20)
-                    )
-                ],
                 datetime.date(2026, 3, 24),
                 ""
             ),
@@ -54,13 +40,6 @@ class PlantRepository:
                 PlantLocation.INDOORS,
                 datetime.date(2018, 3, 1),
                 7,
-                [
-                    PlantPhoto(
-                        "ficus.jpeg",
-                        "",
-                        datetime.date(2026, 3, 20)
-                    )
-                ],
                 datetime.date(2026, 3, 21),
                 ""
             ),
@@ -72,13 +51,6 @@ class PlantRepository:
                 PlantLocation.OUTDOORS,
                 datetime.date(2011, 3, 1),
                 2,
-                [
-                    PlantPhoto(
-                        "blackpine.jpeg",
-                        "",
-                        datetime.date(2026, 3, 20)
-                    )
-                ],
                 datetime.date(2026, 3, 21),
                 ""
             ),
@@ -90,13 +62,6 @@ class PlantRepository:
                 PlantLocation.INDOORS,
                 datetime.date(2024, 3, 1),
                 7,
-                [
-                    PlantPhoto(
-                        "ghostorchid.jpeg",
-                        "",
-                        datetime.date(2026, 3, 20)
-                    )
-                ],
                 datetime.date(2026, 3, 21),
                 ""
             ),
@@ -108,13 +73,6 @@ class PlantRepository:
                 PlantLocation.OUTDOORS,
                 datetime.date(2021, 3, 1),
                 14,
-                [
-                    PlantPhoto(
-                        "aloevera.jpeg",
-                        "",
-                        datetime.date(2026, 3, 20)
-                    )
-                ],
                 datetime.date(2026, 3, 21),
                 ""
             )

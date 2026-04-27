@@ -4,29 +4,30 @@ from backend.src.schema.plant_schema import PlantPhotoResponse, PlantSummaryResp
 
 
 class PlantMapper:
-    IMAGE_FOLDER_PATH = 'backend/src/images/'
     @staticmethod
-    def _get_photo_response(photo: PlantPhoto) -> PlantPhotoResponse:
+    def _get_photo_response(photo: PlantPhoto or None) -> PlantPhotoResponse or None:
+        if photo is None:
+            return None
         return PlantPhotoResponse(
-            url=PlantMapper.IMAGE_FOLDER_PATH + photo.filename,
+            id=photo.id,
+            plant_id=photo.plant_id,
+            url=photo.url,
             caption=photo.caption,
             date=photo.date,
         )
     @staticmethod
     def _get_photo_from_request(request: PlantPhotoRequest) -> PlantPhoto:
+        #TODO - requests should have ids
         return PlantPhoto(
+            id=request.id,
+            plant_id=request.plant_id,
             filename=request.url.split('/')[-1],
             caption=request.caption,
             date=request.date,
         )
 
     @staticmethod
-    def _get_cover_photo(plant: Plant) -> PlantPhotoResponse:
-        return PlantMapper._get_photo_response(plant.photos[-1]) if plant.photos and len(plant.photos) > 0 else None
-
-    @staticmethod
-    def to_summary_response(plant: Plant) -> PlantSummaryResponse:
-        image = PlantMapper._get_cover_photo(plant)
+    def to_summary_response(plant: Plant, photo: PlantPhoto) -> PlantSummaryResponse:
 
         return PlantSummaryResponse(
             id=plant.id,
@@ -35,12 +36,11 @@ class PlantMapper:
             category=plant.category.value,
             last_watered=plant.last_watered,
             age=plant.age,
-            image=image
+            image=PlantMapper._get_photo_response(photo)
         )
 
     @staticmethod
-    def to_detail_response(plant: Plant) -> PlantDetailResponse:
-        image = PlantMapper._get_cover_photo(plant)
+    def to_detail_response(plant: Plant, photos: list[PlantPhoto]) -> PlantDetailResponse:
         return PlantDetailResponse(
             id=plant.id,
             name=plant.name,
@@ -48,13 +48,13 @@ class PlantMapper:
             category=plant.category.value,
             last_watered=plant.last_watered,
             age=plant.age,
-            image=image,
+            image= None if photos is None or len(photos) == 0 else PlantMapper._get_photo_response(photos[-1]),
             location=plant.location.value,
             date_planted=plant.date_planted,
-            photo_count=plant.photo_count,
+            photo_count=len(photos),
             watering_schedule=plant.watering_schedule,
             notes=plant.notes,
-            photos=[PlantMapper._get_photo_response(photo) for photo in plant.photos],
+            photos=[PlantMapper._get_photo_response(photo) for photo in photos],
         )
 
     @staticmethod
@@ -74,10 +74,10 @@ class PlantMapper:
         )
 
     @staticmethod
-    def to_page_request_response(total_plants: int, plants_in_page: list[Plant]) -> PageRequestResponse:
+    def to_page_request_response(total_plants: int, plants_in_page: dict[int:list[Plant, PlantPhoto]]) -> PageRequestResponse:
         return PageRequestResponse(
             total=total_plants,
-            plants= [] if plants_in_page is None else [PlantMapper.to_summary_response(plant) for plant in plants_in_page],
+            plants= [] if plants_in_page is None else [PlantMapper.to_summary_response(plant, photo) for plant, photo in plants_in_page.values()],
         )
 
     @staticmethod
@@ -103,5 +103,4 @@ class PlantMapper:
             watering_schedule=request.watering_schedule,
             notes=request.notes,
             last_watered=request.last_watered,
-            photos=[PlantMapper._get_photo_from_request(photo) for photo in request.photos],
         )

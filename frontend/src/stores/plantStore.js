@@ -57,13 +57,8 @@ export const usePlantStore = defineStore('plants', {
                 const data = await plantApi.getPlant(id);
                 this.currentPlant = {
                     ...data,
-                    photos: data.photos?.map(p => ({
-                        ...p,
-                        url: `http://localhost:8000/${p.url}`
-                    })) || [],
-                    image: data.image?.url
-                        ? `http://localhost:8000/${data.image.url}`
-                        : ''
+                    photos: data.photos?.map(p => this._formatPhoto(p)) || [],
+                    image: this._formatPhoto(data.image)
                 };
             } catch (err) {
                 this.error = "Could not load plant details.";
@@ -106,7 +101,9 @@ export const usePlantStore = defineStore('plants', {
                 const response = await plantApi.getPage(pageNumber, this.pageSize);
                 const mapped = response.plants.map(p => ({
                     ...p,
-                    image: p.image ? `http://localhost:8000/${p.image.url}` : ''
+                    image: p.image?.url
+                        ? `http://localhost:8000/${p.image.url}`
+                        : (typeof p.image === 'string' ? `http://localhost:8000/${p.image}` : '')
                 }));
 
                 this.totalPlants = response.total;
@@ -138,7 +135,7 @@ export const usePlantStore = defineStore('plants', {
                 const data = await plantApi.getPlant(plantId);
                 const newPlant = {
                     ...data,
-                    image: data.image?.url ? `http://localhost:8000/${data.image.url}` : ''
+                    image: this._formatPhoto(data.image)
                 };
 
                 this.plants.push(newPlant);
@@ -296,6 +293,13 @@ export const usePlantStore = defineStore('plants', {
             this.syncQueue = [];
             this.saveToDisk();
             console.log('Cleared sync queue')
-        }
+        },
+        _formatPhoto(photo) {
+            if (!photo) return null;
+            return {
+                ...photo,
+                url: photo.url.startsWith('http') ? photo.url : `http://localhost:8000/${photo.url}`
+            };
+        },
     },
 })

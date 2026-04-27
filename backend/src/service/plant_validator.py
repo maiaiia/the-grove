@@ -19,7 +19,6 @@ class PlantValidator:
     MAX_NOTES_LENGTH = 2000
     MIN_WATERING_DAYS = 1
     MAX_WATERING_DAYS = 365
-    MAX_PHOTOS_PER_PLANT = 100
 
     @staticmethod
     def validate_name(name: str) -> None:
@@ -116,12 +115,6 @@ class PlantValidator:
             raise PlantValidationError("notes", f"Notes cannot exceed {PlantValidator.MAX_NOTES_LENGTH} characters")
 
     @staticmethod
-    def validate_photos(photos: list) -> None:
-        """Validate photos list"""
-        if photos is not None and len(photos) > PlantValidator.MAX_PHOTOS_PER_PLANT:
-            raise PlantValidationError("photos", f"Cannot exceed {PlantValidator.MAX_PHOTOS_PER_PLANT} photos per plant")
-
-    @staticmethod
     def validate_plant_create(
             name: str,
             latin_name: str,
@@ -147,9 +140,7 @@ class PlantValidator:
             watering_schedule: int,
             last_watered: datetime.date,
             notes: Optional[str],
-            photos: list
     ) -> None:
         PlantValidator.validate_plant_create(name, latin_name, category, location, date_planted, watering_schedule)
         PlantValidator.validate_last_watered(last_watered, date_planted)
         PlantValidator.validate_notes(notes)
-        PlantValidator.validate_photos(photos)
