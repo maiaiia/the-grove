@@ -17,7 +17,7 @@ function formatDate(dateStr) {
       <img src="/grovelogo.svg" style="width: 24px; opacity: 0.3;" />
     </div>
     <div class="history-item__meta">
-      <span class="history-item__desc">{{ photo.description || '—' }}</span>
+      <span class="history-item__desc">{{ photo.caption || '—' }}</span>
       <span class="history-item__date">{{ formatDate(photo.date) }}</span>
       <span class="history-item__year">Year {{ year }}</span>
     </div>

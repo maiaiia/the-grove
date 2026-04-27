@@ -15,7 +15,7 @@ class BaseModelWithCaseConversion(BaseModel):
 
 class PhotoBase(BaseModelWithCaseConversion):
     url: str
-    description: str
+    caption: str
     date: date
 
 class PlantPhotoRequest(PhotoBase):

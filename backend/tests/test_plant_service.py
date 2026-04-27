@@ -205,7 +205,7 @@ class TestPlantService:
         too_many_photos = [
             PlantPhotoRequest(
                 url=f"photo{i}.jpg",
-                description="",
+                caption="",
                 date=datetime.date(2020, 1, 1)
             ) for i in range(101)
         ]

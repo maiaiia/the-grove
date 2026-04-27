@@ -31,7 +31,7 @@ export const plantApi = {
     async getAllPlants() {
         const data = await gql(`query {
       plants { id name latinName category lastWatered age
-        image { url description date }
+        image { url caption date }
       }
     }`)
         return data.plants
@@ -42,8 +42,8 @@ export const plantApi = {
       plant(plantId: $id) {
         id name latinName category lastWatered age
         location datePlanted photoCount wateringSchedule notes
-        image { url description date }
-        photos { url description date }
+        image { url caption date }
+        photos { url caption date }
       }
     }`, { id: toInt(id) })
         return data.plant
@@ -54,7 +54,7 @@ export const plantApi = {
       plantsPage(pageNumber: $p, plantsPerPage: $pp) {
         total
         plants { id name latinName category lastWatered age
-          image { url description date }
+          image { url caption date }
         }
       }
     }`, { p: pageNumber, pp: plantsPerPage })
@@ -88,8 +88,8 @@ export const plantApi = {
       createPlant(input: $input) {
         id name latinName category lastWatered age
         location datePlanted photoCount wateringSchedule notes
-        image { url description date }
-        photos { url description date }
+        image { url caption date }
+        photos { url caption date }
       }
     }`, { input })
         return data.createPlant
@@ -118,8 +118,8 @@ export const plantApi = {
       updatePlant(plantId: $id, input: $input) {
         id name latinName category lastWatered age
         location datePlanted photoCount wateringSchedule notes
-        image { url description date }
-        photos { url description date }
+        image { url caption date }
+        photos { url caption date }
       }
     }`, { id: toInt(id), input: input })
         return data.updatePlant

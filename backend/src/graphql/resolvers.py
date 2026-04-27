@@ -13,7 +13,7 @@ from backend.src.service.plant_service import plant_service
 def _photo(p):
     return PlantPhotoType(
         url=p.url,
-        description=p.description,
+        caption=p.caption,
         date=p.date
     ) if p else None
 
@@ -42,7 +42,7 @@ def _detail(d) -> PlantDetailType:
         photo_count=d.photo_count,
         watering_schedule=d.watering_schedule,
         notes=d.notes,
-        photos=[PlantPhotoType(url=p.url, description=p.description, date=p.date)
+        photos=[PlantPhotoType(url=p.url, caption=p.caption, date=p.date)
                 for p in d.photos]
     )
 
@@ -90,7 +90,7 @@ class Query:
 @strawberry.input
 class PlantPhotoInput:
     url: str
-    description: str
+    caption: str
     date: date
 
 @strawberry.input
@@ -143,7 +143,7 @@ class Mutation:
             date_planted=input.date_planted,
             watering_schedule=input.watering_schedule,
             notes=input.notes, last_watered=input.last_watered,
-            photos=[PlantPhotoRequest(url=p.url, description=p.description, date=p.date)
+            photos=[PlantPhotoRequest(url=p.url, caption=p.caption, date=p.date)
                     for p in input.photos],
         )
         result = plant_service.update_plant(plant_id, req)

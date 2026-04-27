@@ -19,7 +19,7 @@ function formatDate(dateStr) {
         <img src="/grovelogo.svg" class="featured__placeholder-logo" />
       </div>
       <div class="featured__overlay" v-if="photo">
-        <span class="featured__desc">{{ photo.description || '—' }}</span>
+        <span class="featured__desc">{{ photo.caption || '—' }}</span>
         <span class="featured__year">Year {{ year }}</span>
       </div>
     </div>

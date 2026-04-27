@@ -47,9 +47,9 @@ describe('createPlant', () => {
         const plant = createPlant({
             ...validData,
             photos: [
-                { date: '2023-01-01', url: '/old.jpg', description: '' },
-                { date: '2025-06-01', url: '/new.jpg', description: '' },
-                { date: '2024-03-01', url: '/mid.jpg', description: '' },
+                { date: '2023-01-01', url: '/old.jpg', caption: '' },
+                { date: '2025-06-01', url: '/new.jpg', caption: '' },
+                { date: '2024-03-01', url: '/mid.jpg', caption: '' },
             ]
         })
         expect(plant.latestPhoto.url).toBe('/new.jpg')
@@ -59,8 +59,8 @@ describe('createPlant', () => {
         const plant = createPlant({
             ...validData,
             photos: [
-                { date: '2025-06-01', url: '/b.jpg', description: '' },
-                { date: '2023-01-01', url: '/a.jpg', description: '' },
+                { date: '2025-06-01', url: '/b.jpg', caption: '' },
+                { date: '2023-01-01', url: '/a.jpg', caption: '' },
             ]
         })
         expect(plant.sortedPhotos[0].url).toBe('/a.jpg')

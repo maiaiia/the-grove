@@ -10,14 +10,14 @@ class PlantMapper:
     def _get_photo_response(photo: PlantPhoto) -> PlantPhotoResponse:
         return PlantPhotoResponse(
             url=PlantMapper.IMAGE_FOLDER_PATH + photo.filename,
-            description=photo.description,
+            caption=photo.caption,
             date=photo.date,
         )
     @staticmethod
     def _get_photo_from_request(request: PlantPhotoRequest) -> PlantPhoto:
         return PlantPhoto(
             filename=request.url.split('/')[-1],
-            description=request.description,
+            caption=request.caption,
             date=request.date,
         )
 

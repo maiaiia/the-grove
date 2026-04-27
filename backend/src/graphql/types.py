@@ -5,7 +5,7 @@ from typing import Optional
 @strawberry.type
 class PlantPhotoType:
     url: str
-    description: str
+    caption: str
     date: date
 
 @strawberry.type
