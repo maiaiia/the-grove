@@ -3,8 +3,7 @@ from datetime import date
 from pydantic import BaseModel, ConfigDict
 from pydantic.alias_generators import to_camel
 
-from backend.src.model.plant_category import PlantCategory
-from backend.src.model.plant_location import PlantLocation
+from backend.src.model import PlantCategory, PlantLocation
 
 class BaseModelWithCaseConversion(BaseModel):
     model_config = ConfigDict(

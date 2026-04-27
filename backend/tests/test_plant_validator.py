@@ -1,8 +1,7 @@
 import datetime
 import pytest
 
-from backend.src.model.plant_category import PlantCategory
-from backend.src.model.plant_location import PlantLocation
+from backend.src.model import PlantCategory, PlantLocation
 from backend.src.service.plant_validator import PlantValidator, PlantValidationError
 
 

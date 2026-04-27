@@ -1,5 +1,5 @@
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
-from backend.src.service.simulation_service import simulation_service
+from backend.src.service import simulation_service
 
 simulation_router = APIRouter(prefix="/api/simulation", tags=["simulation"])
 

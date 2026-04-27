@@ -1,10 +1,6 @@
 import datetime
 
-from backend.src.model.plant import Plant
-from backend.src.model.plant_category import PlantCategory
-from backend.src.model.plant_location import PlantLocation
-from backend.src.model.plant_photo import PlantPhoto
-
+from backend.src.model import Plant, PlantCategory, PlantLocation, PlantPhoto
 
 class PlantRepository:
     def __init__(self):

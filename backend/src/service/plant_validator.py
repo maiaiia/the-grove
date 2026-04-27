@@ -1,8 +1,7 @@
 import datetime
 from typing import Optional
 
-from backend.src.model.plant_category import PlantCategory
-from backend.src.model.plant_location import PlantLocation
+from backend.src.model import PlantCategory, PlantLocation
 
 
 class PlantValidationError(ValueError):

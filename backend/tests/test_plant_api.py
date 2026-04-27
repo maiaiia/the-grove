@@ -6,9 +6,8 @@ import pytest
 from fastapi.testclient import TestClient
 
 from backend.src.main import app
-from backend.src.model.plant_category import PlantCategory
-from backend.src.model.plant_location import PlantLocation
-from backend.src.repository.plant_repository import plant_repository
+from backend.src.model import PlantCategory, PlantLocation
+from backend.src.repository import plant_repository
 
 
 @pytest.fixture(autouse=True)

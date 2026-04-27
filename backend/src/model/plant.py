@@ -1,10 +1,9 @@
 from dataclasses import dataclass, field
 import datetime
 
-from backend.src.model.plant_category import PlantCategory
-from backend.src.model.plant_location import PlantLocation
+from backend.src.model.enum.plant_category import PlantCategory
+from backend.src.model.enum.plant_location import PlantLocation
 from backend.src.model.plant_photo import PlantPhoto
-
 
 @dataclass
 class Plant:

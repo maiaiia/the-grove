@@ -5,7 +5,7 @@ from backend.src.graphql.types import (
     PlantDetailType, PlantSummaryType, PlantPhotoType,
     StatisticsType, ChartItemType, PageResultType
 )
-from backend.src.service.plant_service import plant_service
+from backend.src.service import plant_service
 
 
 #region helpers
@@ -123,8 +123,7 @@ class Mutation:
     @strawberry.mutation
     def create_plant(self, input: CreatePlantInput) -> PlantDetailType:
         from backend.src.schema.plant_schema import PlantCreateRequest
-        from backend.src.model.plant_category import PlantCategory
-        from backend.src.model.plant_location import PlantLocation
+        from backend.src.model import PlantCategory, PlantLocation
         req = PlantCreateRequest(
             name=input.name, latin_name=input.latin_name,
             category=PlantCategory(input.category),

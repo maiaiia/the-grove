@@ -1,7 +1,7 @@
 from collections import Counter
 
-from backend.src.model.plant import Plant
-from backend.src.repository.plant_repository import PlantRepository, plant_repository
+from backend.src.model import Plant
+from backend.src.repository import PlantRepository, plant_repository
 from backend.src.schema import PlantMapper, PlantSummaryResponse, PlantDetailResponse, StatisticsResponse, \
     EMPTY_STATS_RESPONSE, PlantCreateRequest, PageRequestResponse
 from backend.src.schema.plant_schema import PlantUpdateRequest

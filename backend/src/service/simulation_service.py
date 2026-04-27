@@ -3,10 +3,8 @@ import random
 
 from faker import Faker
 
-from backend.src.model.plant import Plant
-from backend.src.model.plant_category import PlantCategory
-from backend.src.model.plant_location import PlantLocation
-from backend.src.repository.plant_repository import plant_repository
+from backend.src.model import Plant, PlantCategory, PlantLocation
+from backend.src.repository import plant_repository
 
 fake = Faker()
 

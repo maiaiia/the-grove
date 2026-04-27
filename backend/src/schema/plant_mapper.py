@@ -1,5 +1,4 @@
-from backend.src.model.plant import Plant
-from backend.src.model.plant_photo import PlantPhoto
+from backend.src.model import Plant, PlantPhoto
 from backend.src.schema.plant_schema import PlantPhotoResponse, PlantSummaryResponse, PlantDetailResponse, \
     StatisticsResponse, ChartItem, PlantCreateRequest, PlantUpdateRequest, PlantPhotoRequest, PageRequestResponse
 

@@ -4,10 +4,8 @@ Tests for PlantRepository
 import datetime
 import pytest
 
-from backend.src.model.plant import Plant
-from backend.src.model.plant_category import PlantCategory
-from backend.src.model.plant_location import PlantLocation
-from backend.src.repository.plant_repository import PlantRepository
+from backend.src.model import Plant, PlantCategory, PlantLocation
+from backend.src.repository import PlantRepository
 
 
 class TestPlantRepository:

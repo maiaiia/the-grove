@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from backend.src.schema import StatisticsResponse
-from backend.src.service.plant_service import plant_service
+from backend.src.service import plant_service
 
 stats_router = APIRouter(prefix="/api/stats", tags=["stats"])
 

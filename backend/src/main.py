@@ -8,9 +8,9 @@ from strawberry.fastapi import GraphQLRouter
 from starlette import status
 from starlette.responses import JSONResponse
 
-from backend.src.graphql.resolvers import Query, Mutation
+from backend.src.graphql import Query, Mutation
 from backend.src.router import simulation_router
-from backend.src.service.plant_validator import PlantValidationError
+from backend.src.service import PlantValidationError
 
 schema = strawberry.Schema(query=Query, mutation=Mutation)
 graphql_app = GraphQLRouter(schema)

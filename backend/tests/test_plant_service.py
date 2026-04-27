@@ -4,13 +4,10 @@ Tests for PlantService
 import datetime
 import pytest
 
-from backend.src.model.plant import Plant
-from backend.src.model.plant_category import PlantCategory
-from backend.src.model.plant_location import PlantLocation
-from backend.src.repository.plant_repository import PlantRepository
+from backend.src.model import Plant, PlantCategory, PlantLocation
+from backend.src.repository import PlantRepository
 from backend.src.schema.plant_schema import PlantCreateRequest, PlantUpdateRequest, PlantPhotoRequest
-from backend.src.service.plant_service import PlantService
-from backend.src.service.plant_validator import PlantValidationError
+from backend.src.service import PlantService, PlantValidationError
 
 
 class TestPlantService:

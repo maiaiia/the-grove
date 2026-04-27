@@ -4,7 +4,7 @@ from starlette import status
 from backend.src.schema import PageRequestResponse
 from backend.src.schema.plant_schema import PlantSummaryResponse, PlantDetailResponse, \
     PlantCreateRequest, PlantUpdateRequest
-from backend.src.service.plant_service import plant_service
+from backend.src.service import plant_service
 
 plant_router = APIRouter(prefix="/api/plants", tags=["plants"])
 
