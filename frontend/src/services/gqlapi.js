@@ -135,6 +135,18 @@ export const plantApi = {
     }`, { id: toInt(id), input: input })
         return data.updatePlant
     },
+    async addPhoto(plantId, photoData) {
+        const data = await gql(`mutation($id: Int!, $url: String!, $caption: String!) {
+        addPlantPhoto(plantId: $id, filename: $url, caption: $caption) {
+            ${PHOTO_FIELDS}
+        }
+    }`, {
+            id: toInt(plantId),
+            url: photoData.url,
+            caption: photoData.caption
+        });
+        return data.addPlantPhoto;
+    },
     async deletePhoto(photoId) {
         const data = await gql(`mutation($id: Int!) {
       deletePhoto(photoId: $id)

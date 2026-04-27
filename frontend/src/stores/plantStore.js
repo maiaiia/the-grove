@@ -276,6 +276,27 @@ export const usePlantStore = defineStore('plants', {
                 console.error(err);
             }
         },
+        async uploadPhoto(plantId, photoData) {
+            try {
+                const newPhoto = await plantApi.addPhoto(plantId, photoData);
+                const formatted = this._formatPhoto(newPhoto);
+
+                if (this.currentPlant && this.currentPlant.id === plantId) {
+                    this.currentPlant.photos.push(formatted);
+                    this.currentPlant.image = formatted;
+                }
+
+                const plantInList = this.plants.find(p => p.id === plantId);
+                if (plantInList) {
+                    plantInList.image = formatted;
+                }
+
+                return formatted;
+            } catch (err) {
+                this.error = "Failed to link photo.";
+                console.error(err);
+            }
+        },
 
         async syncWithServer() {
             if (this.syncQueue.length === 0 || !await checkNetworkStatus()) return;

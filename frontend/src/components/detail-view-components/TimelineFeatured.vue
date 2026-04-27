@@ -1,5 +1,9 @@
 <script setup>
-defineProps({ photo: Object, year: Number })
+import { useAddPhotoModal } from '@/composables/useAddPhotoModal.js'
+import AddPhotoModal from "@/components/modals/AddPhotoModal.vue";
+defineProps({ photo: Object, year: Number, plantId: Number})
+
+const { open } = useAddPhotoModal()
 
 function formatDate(dateStr) {
   return new Date(dateStr).toLocaleDateString('en-GB', {
@@ -23,7 +27,8 @@ function formatDate(dateStr) {
         <span class="featured__year">Year {{ year }}</span>
       </div>
     </div>
-    <button class="featured__add">+ Add new photo</button>
+    <button class="featured__add" @click="open">+ Add new photo</button>
+    <AddPhotoModal :plant-id="plantId"/>
   </div>
 </template>
 

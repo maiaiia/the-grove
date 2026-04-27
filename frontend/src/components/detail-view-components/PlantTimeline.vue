@@ -52,6 +52,7 @@ function handleDeletePhoto(photoId) {
     <TimelineFeatured
         :photo="activePhoto"
         :year="activePhoto ? yearsSincePlanted(activePhoto.date): 0"
+        :plant-id="plant.id"
     />
   </div>
 </template>
