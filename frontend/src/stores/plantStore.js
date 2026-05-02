@@ -8,6 +8,8 @@ let DELETE_OPERATION = 'DELETE'
 let CREATE_OPERATION = 'CREATE'
 let DELETE_PHOTO_OPERATION = 'DELETE_PHOTO'
 
+let BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
 export const usePlantStore = defineStore('plants', {
     state: () => ({
         plants: [],
@@ -103,8 +105,8 @@ export const usePlantStore = defineStore('plants', {
                 const mapped = response.plants.map(p => ({
                     ...p,
                     image: p.image?.url
-                        ? `http://localhost:8000/${p.image.url}`
-                        : (typeof p.image === 'string' ? `http://localhost:8000/${p.image}` : '')
+                        ? `${BASE_URL}/${p.image.url}`
+                        : (typeof p.image === 'string' ? `${BASE_URL}/${p.image}` : '')
                 }));
 
                 this.totalPlants = response.total;
@@ -166,7 +168,7 @@ export const usePlantStore = defineStore('plants', {
                 const response = await plantApi.addPlant(newPlantData);
                 const newPlant = {
                     ...response,
-                    image: response.image ? `http://localhost:8000/${response.image.url}` : ''
+                    image: response.image ? `${BASE_URL}/${response.image.url}` : ''
                 };
                 this.plants.push(newPlant);
                 this.totalPlants++;
@@ -325,7 +327,7 @@ export const usePlantStore = defineStore('plants', {
                     if (index !== -1) {
                         this.plants[index] = {
                             ...response,
-                            image: response.image ? `http://localhost:8000/${response.image.url}` : '',
+                            image: response.image ? `${BASE_URL}/${response.image.url}` : '',
                         };
                         this.saveToDisk();
                     }
@@ -358,7 +360,7 @@ export const usePlantStore = defineStore('plants', {
             if (!photo) return null;
             return {
                 ...photo,
-                url: photo.url.startsWith('http') ? photo.url : `http://localhost:8000/${photo.url}`
+                url: photo.url.startsWith('http') ? photo.url : `${BASE_URL}/${photo.url}`
             };
         },
     },

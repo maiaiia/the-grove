@@ -26,7 +26,7 @@ if IMAGES_DIR.exists():
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # Vue dev server default
+    allow_origins=["http://localhost:5173", "*"],  # Vue dev server default
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

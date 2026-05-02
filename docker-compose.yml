@@ -1,0 +1,12 @@
+services:
+  grove-backend:
+    build:
+      context: .
+      dockerfile: ./backend/Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      # This "syncs" your local code with the container's /app folder
+      - .:/app
+    environment:
+      - PYTHONUNBUFFERED=1

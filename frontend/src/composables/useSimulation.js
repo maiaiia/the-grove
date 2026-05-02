@@ -1,13 +1,16 @@
 import { ref, onUnmounted } from "vue";
 import api from "@/services/api.js";
 
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const WS_BASE = API_BASE.replace(/^http/, 'ws');
+
 const running = ref(false)
 let webSocket = null
 
 export function useSimulation(onPlantAdded) {
 
     function connect() {
-        webSocket = new WebSocket('ws://localhost:8000/api/simulation/ws')
+        webSocket = new WebSocket(`${WS_BASE}/api/simulation/ws`)
 
         webSocket.onopen = () => {
             console.log('[sim] websocket connected')

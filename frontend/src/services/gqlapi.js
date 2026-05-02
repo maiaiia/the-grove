@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:8000'
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 const GQL = `${BASE_URL}/graphql`
 
 const toInt = (id) => parseInt(id, 10)
