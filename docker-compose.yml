@@ -8,13 +8,14 @@ services:
     env_file:
       - ./backend/.env
     volumes:
-      # This "syncs" your local code with the container's /app folder
       - .:/app
     environment:
       - PYTHONUNBUFFERED=1
       - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}
+      - MONGO_URL=mongodb://${MONGO_ROOT_USER}:${MONGO_ROOT_PASSWORD}@mongodb:27017
     depends_on:
       - db
+      - mongodb
 
   db:
     image: postgres:15-alpine
@@ -27,5 +28,19 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  mongodb:
+    image: mongo:latest
+    restart: always
+    env_file:
+      - ./backend/.env
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_ROOT_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_ROOT_PASSWORD}
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
 volumes:
   postgres_data:
+  mongodb_data:
