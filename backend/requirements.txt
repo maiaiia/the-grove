@@ -4,3 +4,6 @@ strawberry-graphql[fastapi]>=0.219.0
 sqlalchemy>=2.0.0
 python-multipart>=0.0.9
 Faker
+sqlalchemy
+psycopg2-binary
+python-dotenv

@@ -186,8 +186,7 @@ class TestPlantService:
             date_planted=datetime.date(2020, 1, 1),
             watering_schedule=7,
             last_watered=datetime.date(2019, 12, 31),  # Before planted
-            notes="",
-            photos=[]
+            notes=""
         )
 
         with pytest.raises(PlantValidationError) as exc_info:

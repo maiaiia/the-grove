@@ -1,19 +1,21 @@
 import datetime
 from collections import Counter
 
+from sqlalchemy.orm import Session
+
 from backend.src.model import Plant
-from backend.src.repository import PlantRepository, plant_repository
+from backend.src.repository import PlantRepository
 from backend.src.schema import PlantMapper, PlantSummaryResponse, PlantDetailResponse, StatisticsResponse, \
     EMPTY_STATS_RESPONSE, PlantCreateRequest, PageRequestResponse
 from backend.src.schema.plant_schema import PlantUpdateRequest
-from backend.src.service.photo_service import PhotoService, photo_service
+from backend.src.service.photo_service import PhotoService
 from backend.src.service.plant_validator import PlantValidator
 
 
 class PlantService:
-    def __init__(self, repository: PlantRepository, service: PhotoService):
-        self.__repository = repository
-        self.__photo_service = service
+    def __init__(self, db: Session):
+        self.__repository = PlantRepository(db)
+        self.__photo_service = PhotoService(db)
 
     def get_all_plants(self) -> list[PlantSummaryResponse]:
         plants = self.__repository.plants
@@ -165,5 +167,3 @@ class PlantService:
         return self.__photo_service.add_photo(plant_id, filename, caption, date)
     def delete_photo(self, photo_id: int):
         return self.__photo_service.delete_photo(photo_id)
-
-plant_service = PlantService(plant_repository, photo_service)

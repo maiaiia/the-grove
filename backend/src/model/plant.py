@@ -1,24 +1,25 @@
-from dataclasses import dataclass, field
 import datetime
+
+from sqlalchemy import Column, Integer, String, Date, Enum
+from sqlalchemy.orm import relationship
+from backend.src.model.base import Base
 
 from backend.src.model.enum.plant_category import PlantCategory
 from backend.src.model.enum.plant_location import PlantLocation
 
-@dataclass
-class Plant:
-    id:                 int
-    name:               str
-    latin_name:         str
-    category:           PlantCategory
-    location:           PlantLocation
-    date_planted:       datetime.date
-    watering_schedule:  int
-    last_watered:       [datetime.date] = None
-    notes:              str = ""
+class Plant(Base):
+    __tablename__ = "plants"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String)
+    latin_name = Column(String)
+    category = Column(Enum(PlantCategory), nullable=False)
+    location = Column(Enum(PlantLocation), nullable=False)
+    date_planted = Column(Date, default=datetime.date.today)
+    watering_schedule = Column(Integer)
+    last_watered = Column(Date, nullable=True)
+    notes = Column(String, default="")
 
-    def __post_init__(self):
-        if self.last_watered is None:
-            self.last_watered = self.date_planted
+    photos = relationship("PlantPhoto", back_populates="plant")
 
     @property
     def age(self) -> int:

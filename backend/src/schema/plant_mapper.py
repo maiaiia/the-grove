@@ -83,12 +83,12 @@ class PlantMapper:
     @staticmethod
     def create_request_to_plant(request: PlantCreateRequest) -> Plant:
         return Plant(
-            id=0,
             name=request.name,
             latin_name=request.latin_name,
             category=request.category,
             location=request.location,
             date_planted=request.date_planted,
+            last_watered=request.date_planted,
             watering_schedule=request.watering_schedule,
         )
     @staticmethod

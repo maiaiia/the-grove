@@ -1,22 +1,45 @@
 from pathlib import Path
 
 import strawberry
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends, Request
 
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.orm import Session
 from strawberry.fastapi import GraphQLRouter
 from starlette import status
 from starlette.responses import JSONResponse
 
 from backend.src.graphql import Query, Mutation
+from backend.src.model.database import get_db, engine
+from backend.src.model.base import Base
 from backend.src.router import simulation_router
 from backend.src.service import PlantValidationError
 
-schema = strawberry.Schema(query=Query, mutation=Mutation)
-graphql_app = GraphQLRouter(schema)
-
-app = FastAPI(title = "The Grove API")
 from fastapi.staticfiles import StaticFiles
+
+from backend.src.model import Plant, PlantPhoto
+
+async def get_context(
+    request: Request,
+    db: Session = Depends(get_db)
+):
+    return {"db": db, "request": request}
+
+schema = strawberry.Schema(query=Query, mutation=Mutation)
+graphql_app = GraphQLRouter(schema, context_getter=get_context)
+
+app = FastAPI(title="The Grove API")
+
+@app.on_event("startup")
+def on_startup():
+    """
+    print("🗑️  Dropping all tables...")
+    Base.metadata.drop_all(bind=engine)
+    print("✅ All tables dropped!")
+    """
+    print("🔨 Creating fresh tables...")
+    Base.metadata.create_all(bind=engine)
+    print("✅ Tables created!")
 
 BASE_DIR = Path(__file__).resolve().parent
 IMAGES_DIR = BASE_DIR / "images"
@@ -26,7 +49,7 @@ if IMAGES_DIR.exists():
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "*"],  # Vue dev server default
+    allow_origins=["http://localhost:5173", "*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -45,6 +68,7 @@ async def plant_validation_exception_handler(request, exception: PlantValidation
 @app.api_route("/api/health", methods=["GET", "HEAD"])
 def health():
     return {"status": "ok"}
+
 @app.get("/")
 def root():
     return {"message": "The Grove's API is working!"}

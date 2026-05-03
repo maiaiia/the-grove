@@ -1,11 +1,14 @@
 import strawberry
 from datetime import date
 from typing import Optional
+
+from sqlalchemy.orm import Session
+
 from backend.src.graphql.types import (
     PlantDetailType, PlantSummaryType, PlantPhotoType,
     StatisticsType, ChartItemType, PageResultType
 )
-from backend.src.service import plant_service
+from backend.src.service import PlantService
 
 #region helpers
 
@@ -64,11 +67,16 @@ def _stats(s) -> StatisticsType:
 @strawberry.type
 class Query:
     @strawberry.field
-    def plants(self) -> list[PlantSummaryType]:
+    def plants(self, info: strawberry.Info) -> list[PlantSummaryType]:
+        db: Session = info.context["db"]
+        plant_service = PlantService(db)
+
         return [_summary(p) for p in plant_service.get_all_plants()]
 
     @strawberry.field
-    def plants_page(self, page_number: int, plants_per_page: int) -> PageResultType:
+    def plants_page(self, page_number: int, plants_per_page: int, info: strawberry.Info) -> PageResultType:
+        db: Session = info.context["db"]
+        plant_service = PlantService(db)
         result = plant_service.get_plants_in_page(page_number, plants_per_page)
         return PageResultType(
             total=result.total,
@@ -76,12 +84,16 @@ class Query:
         )
 
     @strawberry.field
-    def plant(self, plant_id: int) -> Optional[PlantDetailType]:
+    def plant(self, plant_id: int, info: strawberry.Info) -> Optional[PlantDetailType]:
+        db: Session = info.context["db"]
+        plant_service = PlantService(db)
         p = plant_service.get_plant(plant_id)
         return _detail(p) if p else None
 
     @strawberry.field
-    def statistics(self) -> StatisticsType:
+    def statistics(self, info: strawberry.Info) -> StatisticsType:
+        db: Session = info.context["db"]
+        plant_service = PlantService(db)
         return _stats(plant_service.get_statistics())
 
 #endregion
@@ -113,7 +125,6 @@ class UpdatePlantInput:
     watering_schedule: int
     notes: str
     last_watered: date
-    photos: list[PlantPhotoInput] #todo - remove
 
 #endregion
 
@@ -122,7 +133,7 @@ class UpdatePlantInput:
 @strawberry.type
 class Mutation:
     @strawberry.mutation
-    def create_plant(self, input: CreatePlantInput) -> PlantDetailType:
+    def create_plant(self, input: CreatePlantInput, info: strawberry.Info) -> PlantDetailType:
         from backend.src.schema.plant_schema import PlantCreateRequest
         from backend.src.model import PlantCategory, PlantLocation
         req = PlantCreateRequest(
@@ -132,10 +143,12 @@ class Mutation:
             date_planted=input.date_planted,
             watering_schedule=input.watering_schedule,
         )
+        db: Session = info.context["db"]
+        plant_service = PlantService(db)
         return _detail(plant_service.create_plant(req))
 
     @strawberry.mutation
-    def update_plant(self, plant_id: int, input: UpdatePlantInput) -> Optional[PlantDetailType]:
+    def update_plant(self, plant_id: int, input: UpdatePlantInput, info: strawberry.Info) -> Optional[PlantDetailType]:
         from backend.src.schema.plant_schema import PlantUpdateRequest, PlantPhotoRequest
         req = PlantUpdateRequest(
             name=input.name, latin_name=input.latin_name,
@@ -143,14 +156,16 @@ class Mutation:
             date_planted=input.date_planted,
             watering_schedule=input.watering_schedule,
             notes=input.notes, last_watered=input.last_watered,
-            photos=[PlantPhotoRequest(url=p.url, caption=p.caption, date=p.date)
-                    for p in input.photos],
         )
+        db: Session = info.context["db"]
+        plant_service = PlantService(db)
         result = plant_service.update_plant(plant_id, req)
         return _detail(result) if result else None
 
     @strawberry.mutation
-    def delete_plant(self, plant_id: int) -> bool:
+    def delete_plant(self, plant_id: int, info: strawberry.Info) -> bool:
+        db: Session = info.context["db"]
+        plant_service = PlantService(db)
         plant_service.delete_plant(plant_id)
         return True
 
@@ -159,8 +174,11 @@ class Mutation:
             self,
             plant_id: int,
             filename: str,
-            caption: str
+            caption: str,
+            info: strawberry.Info
     ) -> PlantPhotoType:
+        db: Session = info.context["db"]
+        plant_service = PlantService(db)
         new_photo = plant_service.add_photo(
             plant_id=plant_id,
             filename=filename,
@@ -170,7 +188,9 @@ class Mutation:
         return _photo(new_photo)
 
     @strawberry.mutation
-    def delete_photo(self, photo_id: int) -> bool:
+    def delete_photo(self, photo_id: int, info: strawberry.Info) -> bool:
+        db: Session = info.context["db"]
+        plant_service = PlantService(db)
         return plant_service.delete_photo(photo_id)
 
 #endregion

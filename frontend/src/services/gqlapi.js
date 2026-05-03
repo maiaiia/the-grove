@@ -125,7 +125,6 @@ export const plantApi = {
             datePlanted: plantData.datePlanted,
             wateringSchedule: plantData.wateringSchedule,
             notes: plantData.notes,
-            photos: plantData.photos,
             lastWatered: plantData.lastWatered,
         };
         const data = await gql(`mutation($id: Int!, $input: UpdatePlantInput!) {

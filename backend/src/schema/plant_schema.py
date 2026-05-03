@@ -87,13 +87,8 @@ class PlantCreateRequest(PlantBase):
 class PlantUpdateRequest(PlantBase):
     notes:          str
     last_watered:   date
-    photos:         list[PlantPhotoRequest]
 
 
 #todo - plant detail response should not have an image.
 # create a new schema that contains a plant detail response AND an image
 # and name it something else
-
-
-
-

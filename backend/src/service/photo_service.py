@@ -1,12 +1,14 @@
 import datetime
 
+from sqlalchemy.orm import Session
+
 from backend.src.model import PlantPhoto
-from backend.src.repository import PhotoRepository, photo_repository
+from backend.src.repository import PhotoRepository
 
 
 class PhotoService:
-    def __init__(self, repository: PhotoRepository):
-        self.__repository = repository
+    def __init__(self, db: Session):
+        self.__repository = PhotoRepository(db)
 
     def __len__(self):
         return len(self.__repository)
@@ -39,5 +41,3 @@ class PhotoService:
 
     def delete_photos_for_plant(self, plant_id: int) -> bool:
         return self.__repository.delete_photos_for_plant(plant_id)
-
-photo_service = PhotoService(photo_repository)

@@ -4,7 +4,8 @@ import random
 from faker import Faker
 
 from backend.src.model import Plant, PlantCategory, PlantLocation
-from backend.src.repository import plant_repository
+from backend.src.model.database import SessionLocal
+from backend.src.repository import PlantRepository
 
 fake = Faker()
 
@@ -32,10 +33,10 @@ class SimulationService:
     async def run_loop(self):
         while self.running:
             print(f"[sim] loop tick, running={self.running}")
+            db = SessionLocal()
             try:
                 date_planted = fake.date_between(start_date='-30y', end_date='today')
                 new_plant = Plant(
-                    id=0,
                     name=fake.first_name() + ' ' + random.choice(['Fern', 'Magnolia', 'Oak', 'Maple', 'Bloom', 'Vine']),
                     latin_name=fake.last_name().lower() + "us " + fake.last_name().lower() + "is",
                     category=random.choice([t for t in list(PlantCategory) if t != PlantCategory.ALL ]),
@@ -45,11 +46,14 @@ class SimulationService:
                     last_watered=fake.date_between(start_date=date_planted, end_date='today'),
                     notes=fake.text(),
                 )
+                plant_repository = PlantRepository(db)
                 saved = plant_repository.save(new_plant)
                 print(f"[sim] added plant #{saved.id}: {saved.name}")
                 await self._broadcast(f'{{"event":"plant_added", "id":{saved.id}}}')
             except Exception as e:
                 print(f"[sim] ERROR: {e}")
+            finally:
+                db.close()
             await asyncio.sleep(1)
 
     def start(self):
