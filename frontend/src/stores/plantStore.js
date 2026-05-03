@@ -201,6 +201,9 @@ export const usePlantStore = defineStore('plants', {
         },
 
         async deletePlant(id) {
+            const originalPlants = [...this.plants];
+            const originalTotal = this.totalPlants;
+
             this.plants = this.plants.filter(p => p.id !== id)
             this.totalPlants--;
             this.saveToDisk();
@@ -212,7 +215,12 @@ export const usePlantStore = defineStore('plants', {
                 try {
                     await plantApi.deletePlant(id)
                 } catch (err) {
-                    console.log("Failed to delete plant: ", err.message)
+                    this.plants = originalPlants;
+                    this.totalPlants = originalTotal;
+                    this.saveToDisk();
+
+                    this.error = "Permission denied or server error. Could not delete plant.";
+                    throw err;
                 }
             } else {
                 if (String(id).startsWith('temp_')) {

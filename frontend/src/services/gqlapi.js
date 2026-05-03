@@ -1,12 +1,19 @@
+import {setCookie, deleteCookie, getCookie} from "@/utils/cookieHelper.js";
+
 const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 const GQL = `${BASE_URL}/graphql`
 
 const toInt = (id) => parseInt(id, 10)
 
 async function gql(query, variables = {}) {
+    const token = getCookie('access_token')
+    const headers = { 'Content-Type': 'application/json' }
+    if (token) headers['Authorization'] = `Bearer ${token}`
+
     const res = await fetch(GQL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ query, variables }),
     })
     const json = await res.json()
@@ -152,4 +159,44 @@ export const plantApi = {
     }`, { id: toInt(photoId) });
         return data.deletePhoto;
     },
+}
+
+export const authApi = {
+    async login(username, password) {
+        const data = await gql(`mutation($input: LoginInput!) {
+            login(input: $input) {
+                user { id username email role { name } }
+                message
+                token
+            }
+        }`, { input: { username, password } })
+
+        if (data.login.token) {
+            setCookie('access_token', data.login.token)
+        }
+
+        return data.login
+    },
+
+    async register(username, email, password) {
+        const data = await gql(`mutation($input: RegisterInput!) {
+            register(input: $input) {
+                id username email role { name }
+            }
+        }`, { input: { username, email, password } })
+        return data.register
+    },
+
+    async logout() {
+        deleteCookie('access_token')
+        const data = await gql(`mutation { logout }`)
+        return data.logout
+    },
+
+    async checkAuth() {
+        const data = await gql(`query {
+            checkAuth { authenticated user { id username email role { name } } }
+        }`)
+        return data.checkAuth
+    }
 }

@@ -11,14 +11,32 @@
       <router-link to="/statistics" class="link">Statistics</router-link>
       <router-link to="/grove" class="link">My Grove</router-link>
 
-      <button class="add-btn" @click="open">+ Add Plant</button>
+      <template v-if="authStore.isAuthenticated">
+        <div class="divider" />
+        <div class="user-cluster">
+          <span class="username">{{ authStore.username }}</span>
+          <button class="add-btn" @click="open">+ Add Plant</button>
+          <button class="logout-btn" @click="handleLogout">↩</button>
+        </div>
+      </template>
+      <router-link v-else to= "/sign-in" class="link">Log In</router-link>
     </nav>
   </header>
 </template>
 
 <script setup>
-  import { useAddPlantModal } from '@/composables/useAddPlantModal.js'
-  const { open } = useAddPlantModal()
+import { useAddPlantModal } from '@/composables/useAddPlantModal.js'
+import { useRouter } from 'vue-router'
+import {useAuthStore} from "@/stores/authstore.js";
+
+const { open } = useAddPlantModal()
+const authStore = useAuthStore()
+const router = useRouter()
+
+const handleLogout = async () => {
+  await authStore.logout()
+  router.push('/sign-in')
+}
 </script>
 
 <style scoped>
@@ -118,4 +136,42 @@
     font-size: 10px
   }
 }
+
+.username {
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: var(--green-kelp);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.logout-btn {
+  background: transparent;
+  border: 1px solid var(--rodeo-dust);
+  color: var(--avocado);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+  padding: 0;
+}
+.logout-btn:hover {
+  border-color: var(--green-kelp);
+  color: var(--green-kelp);
+}
+.divider {
+  width: 1px;
+  height: 20px;
+  background-color: var(--rodeo-dust);
+}
+.user-cluster {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 </style>

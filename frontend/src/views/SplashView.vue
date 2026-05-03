@@ -1,13 +1,12 @@
 <script setup>
 
-import SplashNav from "@/components/splash-components/SplashNav.vue";
 import PlantShowcase from "@/components/splash-components/PlantShowcase.vue";
 import SplashHeadline from "@/components/splash-components/SplashHeadline.vue";
 import SplashStats from "@/components/splash-components/SplashStats.vue";
 </script>
 
 <template>
-    <SplashNav />
+  <div class="topborder"/>
   <div class="splash-view">
     <SplashHeadline />
     <PlantShowcase />
@@ -27,6 +26,20 @@ import SplashStats from "@/components/splash-components/SplashStats.vue";
   width: 100%;
   min-height: 100vh;
   background-color: var(--parchment);
+}
+
+.topborder {
+  padding: 20px 48px;
+  border-top: 2.5px solid var(--marigold);
+}
+
+.splash-navbar {
+  display: flex;
+  justify-content: right;
+  align-items: center;
+
+  padding: 20px 48px;
+  border-top: 2.5px solid var(--marigold);
 }
 
 @media (min-width: 1024px) {

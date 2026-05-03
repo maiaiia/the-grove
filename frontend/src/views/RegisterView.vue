@@ -2,17 +2,24 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import AuthLayout from "@/components/AuthLayout.vue";
+import {useAuthStore} from "@/stores/authstore.js";
 
 const router = useRouter();
-const name = ref('');
+const username = ref('');
 const email = ref('');
 const password = ref('');
 
-const handleRegister = () => {
-  console.log('Registering...', { name: name.value, email: email.value, password: password.value });
-  router.push('/');
-};
+const authStore = useAuthStore()
+const error = ref('')
 
+const handleRegister = async () => {
+  try {
+    await authStore.register(username.value, email.value, password.value)
+    router.push('/sign-in')
+  } catch (err) {
+    error.value = err.message
+  }
+}
 const goToSignIn = () => {
   router.push('/sign-in');
 };
@@ -26,11 +33,11 @@ const goToSignIn = () => {
     <template #form>
       <form @submit.prevent="handleRegister" class="auth-form">
         <div class="form-group">
-          <label for="name">NAME</label>
+          <label for="username">USERNAME</label>
           <input
               type="text"
-              id="name"
-              v-model="name"
+              id="username"
+              v-model="username"
               placeholder="Your name"
               required
           />
@@ -57,7 +64,7 @@ const goToSignIn = () => {
               required
           />
         </div>
-
+        <p v-if="error" style="color: var(--burnt-umber); font-size: 13px;">{{ error }}</p>
         <button type="submit" class="submit-btn">
           JOIN THE GROVE
         </button>

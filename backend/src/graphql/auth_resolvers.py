@@ -1,4 +1,5 @@
 import strawberry
+from fastapi import Response
 from typing import Optional
 from sqlalchemy.orm import Session
 
@@ -137,11 +138,20 @@ class AuthMutation:
 
         user, access_token = result
 
-        info.context["set_auth_cookie"] = access_token
+        response: Response = info.context["response"]
+        response.set_cookie(
+            key="access_token",
+            value=access_token,
+            httponly=True,
+            max_age=60 * 60 * 24,
+            samesite="lax",
+            secure=False
+        )
 
         return AuthPayloadType(
             user=_user(user),
-            message="Login successful"
+            message="Login successful",
+            token=access_token,
         )
 
     @strawberry.mutation
@@ -163,9 +173,8 @@ class AuthMutation:
 
     @strawberry.mutation
     def logout(self, info: strawberry.Info) -> str:
-        """Logout user - clears cookie via context"""
-        # Signal to get_context to clear the cookie
-        info.context["clear_auth_cookie"] = True
+        response: Response = info.context["response"]
+        response.delete_cookie(key="access_token")
         return "Logged out successfully"
 
 # endregion

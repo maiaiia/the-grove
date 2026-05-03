@@ -2,16 +2,24 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import AuthLayout from "@/components/AuthLayout.vue";
+import {useAuthStore} from "@/stores/authstore.js";
+
+const authStore = useAuthStore()
+const error = ref('')
 
 const router = useRouter();
-const email = ref('');
+const username = ref('');
 const password = ref('');
 const rememberMe = ref(false);
 
-const handleSignIn = () => {
-  console.log('Signing in...', { email: email.value, password: password.value });
-  router.push('/');
-};
+const handleSignIn = async () => {
+  try {
+    await authStore.login(username.value, password.value)
+    router.push('/grove')
+  } catch (err) {
+    error.value = err.message
+  }
+}
 
 const goToRegister = () => {
   router.push('/register');
@@ -26,12 +34,12 @@ const goToRegister = () => {
     <template #form>
       <form @submit.prevent="handleSignIn" class="auth-form">
         <div class="form-group">
-          <label for="email">Email Address</label>
+          <label for="username">USERNAME</label>
           <input
-              type="email"
-              id="email"
-              v-model="email"
-              placeholder="you@grove.com"
+              type="text"
+              id="username"
+              v-model="username"
+              placeholder="Your name"
               required
           />
         </div>
@@ -55,6 +63,7 @@ const goToRegister = () => {
           <router-link to="#" class="forgot-link">Forgot password?</router-link>
         </div>
 
+        <p v-if="error" style="color: var(--burnt-umber); font-size: 13px;">{{ error }}</p>
         <button type="submit" class="submit-btn">
           Enter the grove
         </button>

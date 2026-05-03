@@ -6,7 +6,9 @@ import BrandDescription from "@/components/BrandDescription.vue";
 <template>
   <div class="auth-container">
     <div class="left-panel">
-      <BrandLogo theme="dark"/>
+      <router-link to="/" class="logo-link">
+        <BrandLogo theme="dark"/>
+      </router-link>
       <BrandDescription theme="dark"/>
     </div>
     <div class="right-panel">
@@ -179,6 +181,11 @@ import BrandDescription from "@/components/BrandDescription.vue";
   border-left: none;
   border-top: none;
   border-color: var(--mongoose);
+}
+
+.logo-link{
+  text-decoration: none;
+  cursor: pointer;
 }
 
 @media (max-width: 768px) {

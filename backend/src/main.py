@@ -7,8 +7,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from starlette import status
 from starlette.responses import JSONResponse
+from strawberry.fastapi import GraphQLRouter
 
-from backend.src.graphql import Query, Mutation, CustomGraphQLRouter
+from backend.src.graphql import Query, Mutation
 from backend.src.model.database import get_db, engine
 from backend.src.model.base import Base
 from backend.src.router import simulation_router
@@ -26,10 +27,6 @@ async def get_context(
         response: Response,
         db: Session = Depends(get_db)
 ):
-    """
-    GraphQL context with auth support.
-    Extracts user from JWT cookie and handles login/logout cookie operations.
-    """
     context = {
         "db": db,
         "request": request,
@@ -37,18 +34,22 @@ async def get_context(
         "current_user": None
     }
 
-    # Try to get current user from cookie
-    access_token = request.cookies.get("access_token")
+    access_token = None
+    auth_header = request.headers.get("Authorization")
+    if auth_header and auth_header.startswith("Bearer "):
+        access_token = auth_header.split(" ")[1]
+    else:
+        access_token = request.cookies.get("access_token")
+
     if access_token:
         auth_service = AuthService(db)
         current_user = auth_service.get_current_user(access_token)
         context["current_user"] = current_user
 
-    request.state.graphql_context = context
     return context
 
 schema = strawberry.Schema(query=Query, mutation=Mutation)
-graphql_app = CustomGraphQLRouter(schema, context_getter=get_context)
+graphql_app = GraphQLRouter(schema, context_getter=get_context)
 
 app = FastAPI(title="The Grove API")
 
@@ -70,8 +71,8 @@ def on_startup():
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "*"],
-    allow_credentials=True,  # CRITICAL for cookies!
+    allow_origins=["http://localhost:5173", "http://192.168.109.222:5173", "http://192.168.109.222:5174"],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )

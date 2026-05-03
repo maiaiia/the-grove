@@ -28,6 +28,7 @@ class AuthPayloadType:
     """Response type for login mutation"""
     user: UserType
     message: str
+    token: str
 
 
 @strawberry.type

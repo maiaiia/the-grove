@@ -4,10 +4,12 @@ from typing import Optional
 
 from sqlalchemy.orm import Session
 
+from backend.src.graphql.auth_resolvers import require_permission
 from backend.src.graphql.types import (
     PlantDetailType, PlantSummaryType, PlantPhotoType,
     StatisticsType, ChartItemType, PageResultType
 )
+from backend.src.model.enum.user_permission import PermissionName
 from backend.src.service import PlantService
 
 #region helpers
@@ -65,7 +67,7 @@ def _stats(s) -> StatisticsType:
 
 #region queries
 @strawberry.type
-class Query:
+class PlantQuery:
     @strawberry.field
     def plants(self, info: strawberry.Info) -> list[PlantSummaryType]:
         db: Session = info.context["db"]
@@ -131,9 +133,10 @@ class UpdatePlantInput:
 #region mutations
 
 @strawberry.type
-class Mutation:
+class PlantMutation:
     @strawberry.mutation
     def create_plant(self, input: CreatePlantInput, info: strawberry.Info) -> PlantDetailType:
+        require_permission(info, PermissionName.WRITE_PLANT)
         from backend.src.schema.plant_schema import PlantCreateRequest
         from backend.src.model import PlantCategory, PlantLocation
         req = PlantCreateRequest(
@@ -150,6 +153,8 @@ class Mutation:
     @strawberry.mutation
     def update_plant(self, plant_id: int, input: UpdatePlantInput, info: strawberry.Info) -> Optional[PlantDetailType]:
         from backend.src.schema.plant_schema import PlantUpdateRequest, PlantPhotoRequest
+        require_permission(info, PermissionName.READ_PLANT)
+        require_permission(info, PermissionName.WRITE_PLANT)
         req = PlantUpdateRequest(
             name=input.name, latin_name=input.latin_name,
             category=input.category, location=input.location,
@@ -164,6 +169,8 @@ class Mutation:
 
     @strawberry.mutation
     def delete_plant(self, plant_id: int, info: strawberry.Info) -> bool:
+        require_permission(info, PermissionName.READ_PLANT)
+        require_permission(info, PermissionName.DELETE_PLANT)
         db: Session = info.context["db"]
         plant_service = PlantService(db)
         plant_service.delete_plant(plant_id)
@@ -177,6 +184,8 @@ class Mutation:
             caption: str,
             info: strawberry.Info
     ) -> PlantPhotoType:
+        require_permission(info, PermissionName.READ_PLANT)
+        require_permission(info, PermissionName.WRITE_PLANT)
         db: Session = info.context["db"]
         plant_service = PlantService(db)
         new_photo = plant_service.add_photo(
@@ -189,6 +198,8 @@ class Mutation:
 
     @strawberry.mutation
     def delete_photo(self, photo_id: int, info: strawberry.Info) -> bool:
+        require_permission(info, PermissionName.READ_PLANT)
+        require_permission(info, PermissionName.DELETE_PLANT)
         db: Session = info.context["db"]
         plant_service = PlantService(db)
         return plant_service.delete_photo(photo_id)

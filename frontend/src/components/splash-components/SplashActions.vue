@@ -1,11 +1,28 @@
 <script setup>
-defineEmits(['enter', 'learn'])
+import {useAuthStore} from "@/stores/authstore.js";
+import {useRouter} from "vue-router";
+
+const authStore = useAuthStore();
+const router = useRouter();
+
+const handleEnter = () => {
+  if (authStore.isAuthenticated) {
+    router.push('/grove');
+  } else {
+    router.push('/sign-in');
+  }
+};
+
+const handleLearn = () => {
+  router.push('/grove');
+}
+
 </script>
 
 <template>
   <div class="splash-actions">
-    <button class="btn btn--primary" @click="$emit('enter')">Enter the Grove</button>
-    <button class="btn btn--outline" @click="$emit('learn')">Learn More</button>
+    <button class="btn btn--primary" @click="handleEnter">Enter the Grove</button>
+    <button class="btn btn--outline" @click="handleLearn">Learn More</button>
   </div>
 </template>
 
