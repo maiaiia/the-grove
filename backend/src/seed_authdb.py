@@ -49,7 +49,7 @@ def create_users(db: SessionLocal, admin_role, guest_role, user_role):
         admin_user = User(
             username="admin",
             email="admin@mail.com",
-            password=AuthService.hash_password('adminpassword'),  # todo encrypt later on
+            password=AuthService.hash_password('adminpassword'),
             role=admin_role
         )
         db.add(admin_user)
@@ -58,7 +58,7 @@ def create_users(db: SessionLocal, admin_role, guest_role, user_role):
         regular_user = User(
             username="maia",
             email="maia@mail.com",
-            password=AuthService.hash_password('userpassword'),  # todo encrypt later on
+            password=AuthService.hash_password('userpassword'),
             role=user_role
         )
         db.add(regular_user)
