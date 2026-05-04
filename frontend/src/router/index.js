@@ -6,6 +6,7 @@ import StatisticsView from '../views/StatisticsView.vue'
 import RoadmapView    from '../views/RoadmapView.vue'
 import SignInView from "@/views/SignInView.vue";
 import RegisterView from "@/views/RegisterView.vue";
+import ChatView from "@/views/ChatView.vue";
 
 const router = createRouter({
     history: createWebHistory(),
@@ -16,7 +17,8 @@ const router = createRouter({
         { path: '/statistics',  component: StatisticsView },
         { path: '/roadmap',     component: RoadmapView },
         { path: '/sign-in',     component: SignInView },
-        { path: '/register',     component: RegisterView },
+        { path: '/register',    component: RegisterView },
+        {path: '/chat',         component: ChatView},
     ]
 })
 

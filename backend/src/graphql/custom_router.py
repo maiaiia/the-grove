@@ -1,0 +1,27 @@
+from strawberry.fastapi import GraphQLRouter
+from fastapi import Request, Response
+
+
+class CustomGraphQLRouter(GraphQLRouter):
+    async def execute_request(self, request: Request, response: Response, *args, **kwargs):
+        result = await super().execute_request(request, response, *args, **kwargs)
+
+        context = getattr(request.state, "graphql_context", None)
+        if context:
+            if "set_auth_cookie" in context:
+                response.set_cookie(
+                    key="access_token",
+                    value=context["set_auth_cookie"],
+                    httponly=True,
+                    max_age=60 * 60 * 24,
+                    samesite="lax",
+                    secure=False
+                )
+            if context.get("clear_auth_cookie"):
+                response.delete_cookie(
+                    key="access_token",
+                    samesite="lax",
+                    secure=False
+                )
+
+        return result

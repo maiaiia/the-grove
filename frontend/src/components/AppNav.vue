@@ -8,6 +8,7 @@
 
     <!-- Right: Navigation -->
     <nav class="nav-links">
+      <router-link to="/chat" class="link">Chat</router-link>
       <router-link to="/statistics" class="link">Statistics</router-link>
       <router-link to="/grove" class="link">My Grove</router-link>
 

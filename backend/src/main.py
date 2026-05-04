@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 from pathlib import Path
 
 import strawberry
@@ -7,19 +8,30 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from starlette import status
 from starlette.responses import JSONResponse
-from strawberry.fastapi import GraphQLRouter
 
 from backend.src.graphql import Query, Mutation
+from backend.src.graphql.custom_router import CustomGraphQLRouter
 from backend.src.model.database import get_db, engine
 from backend.src.model.base import Base
 from backend.src.router import simulation_router
+from backend.src.router.chat_router import router as chat_router
 from backend.src.service import PlantValidationError
-from backend.src.model import Plant, PlantPhoto
 from backend.src.service.auth_service import AuthService
+from backend.src.model.mongodb import connect_mongo, disconnect_mongo
 from .seed_authdb import seed_auth_data
 
 BASE_DIR = Path(__file__).resolve().parent
 IMAGES_DIR = BASE_DIR / "images"
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    seed_auth_data()
+    Base.metadata.create_all(bind=engine)
+    await connect_mongo()
+    print("Startup sequence complete!")
+    yield
+    await disconnect_mongo()
 
 
 async def get_context(
@@ -34,44 +46,29 @@ async def get_context(
         "current_user": None
     }
 
-    access_token = None
-    auth_header = request.headers.get("Authorization")
-    if auth_header and auth_header.startswith("Bearer "):
-        access_token = auth_header.split(" ")[1]
-    else:
-        access_token = request.cookies.get("access_token")
+    access_token = request.cookies.get("access_token")
 
     if access_token:
         auth_service = AuthService(db)
         current_user = auth_service.get_current_user(access_token)
         context["current_user"] = current_user
 
+    request.state.graphql_context = context
     return context
 
+
 schema = strawberry.Schema(query=Query, mutation=Mutation)
-graphql_app = GraphQLRouter(schema, context_getter=get_context)
+graphql_app = CustomGraphQLRouter(schema, context_getter=get_context)
 
-app = FastAPI(title="The Grove API")
-
-
-@app.on_event("startup")
-def on_startup():
-    # first we need the roles
-    seed_auth_data()
-    # then the actual data in the database
-    """
-    print("Dropping data tables...")
-    Base.metadata.drop_all(bind=engine)
-    """
-    print("Creating data tables...")
-    Base.metadata.create_all(bind=engine)
-
-    print("Startup sequence complete!")
-
+app = FastAPI(title="The Grove API", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://192.168.109.222:5173", "http://192.168.109.222:5174"],
+    allow_origins=[
+        "http://localhost:5173",
+        "http://192.168.109.222:5173",
+        "http://192.168.109.222:5174"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -82,6 +79,7 @@ if IMAGES_DIR.exists():
 
 app.include_router(simulation_router)
 app.include_router(graphql_app, prefix="/graphql")
+app.include_router(chat_router)
 
 
 @app.exception_handler(PlantValidationError)

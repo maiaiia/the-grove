@@ -137,21 +137,12 @@ class AuthMutation:
             raise Exception("Incorrect username or password")
 
         user, access_token = result
-
-        response: Response = info.context["response"]
-        response.set_cookie(
-            key="access_token",
-            value=access_token,
-            httponly=True,
-            max_age=60 * 60 * 24,
-            samesite="lax",
-            secure=False
-        )
+        info.context["set_auth_cookie"] = access_token
 
         return AuthPayloadType(
             user=_user(user),
             message="Login successful",
-            token=access_token,
+            token= access_token,
         )
 
     @strawberry.mutation
@@ -173,8 +164,7 @@ class AuthMutation:
 
     @strawberry.mutation
     def logout(self, info: strawberry.Info) -> str:
-        response: Response = info.context["response"]
-        response.delete_cookie(key="access_token")
+        info.context["clear_auth_cookie"] = True
         return "Logged out successfully"
 
 # endregion

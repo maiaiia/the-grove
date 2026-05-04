@@ -6,10 +6,6 @@ const GQL = `${BASE_URL}/graphql`
 const toInt = (id) => parseInt(id, 10)
 
 async function gql(query, variables = {}) {
-    const token = getCookie('access_token')
-    const headers = { 'Content-Type': 'application/json' }
-    if (token) headers['Authorization'] = `Bearer ${token}`
-
     const res = await fetch(GQL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -170,26 +166,15 @@ export const authApi = {
                 token
             }
         }`, { input: { username, password } })
-
         if (data.login.token) {
-            setCookie('access_token', data.login.token)
+            sessionStorage.setItem('access_token', data.login.token);
         }
-
         return data.login
     },
 
-    async register(username, email, password) {
-        const data = await gql(`mutation($input: RegisterInput!) {
-            register(input: $input) {
-                id username email role { name }
-            }
-        }`, { input: { username, email, password } })
-        return data.register
-    },
-
     async logout() {
-        deleteCookie('access_token')
         const data = await gql(`mutation { logout }`)
+        sessionStorage.removeItem('access_token')
         return data.logout
     },
 
